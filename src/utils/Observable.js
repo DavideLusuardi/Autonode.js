@@ -121,6 +121,14 @@ class Observable {
         })
     }
 
+    notifyAll(){
+        for (let [key, value] of Object.entries(this.#values)) {
+            for (let obs of Object.values(this.#observers[key])){
+                obs(value, key)
+            }
+        }
+    }
+
 }
 
 

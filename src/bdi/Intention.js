@@ -4,7 +4,9 @@ const Agent = require('./Agent');
 var nextId = 0
 
 /**
- * @class Intention
+ * @class Intention TODO
+ * triggerano comportamenti degli agenti solo sulla base del suo beliefset
+ * sensori unica interfaccia con i device
  */
 class Intention {
     

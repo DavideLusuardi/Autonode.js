@@ -56,6 +56,10 @@ class Clock {
         }
     }
 
+    static getTime() {
+        return {dd:Clock.global.dd, hh:Clock.global.hh, mm:Clock.global.mm}
+    }
+
 }
 
 
