@@ -25,6 +25,7 @@ class BrightnessSensingIntention extends Intention {
     *exec () {
         var rooms_promises = []
         for (let [name, room] of Object.entries(this.rooms)){
+            this.agent.beliefs.declare(`brightness_high ${room.name}`, (Clock.global.hh >= 8 && Clock.global.hh <= 18)) // set initial knowledge
 
             let room_promise = new Promise( async res => {
                 while (true) {

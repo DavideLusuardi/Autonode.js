@@ -46,6 +46,8 @@ class PersonDetectionIntention extends Intention {
     *exec () {
         var people_promises = []
         for (let [name, person] of Object.entries(this.people)){
+            this.agent.beliefs.declare(`person_in_room ${person.name} ${person.in_room}`) // set initial knowledge
+
             let person_promise = new Promise( async res => {
                 while (true) {
                     let room = await person.notifyChange('in_room')

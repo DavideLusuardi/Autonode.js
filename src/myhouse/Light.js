@@ -42,6 +42,8 @@ class LightControlIntention extends Intention {
     }
 
     *exec () {
+        this.adaptLights() // set initial knowledge
+
         var promises = []
         for (let [name, light] of Object.entries(this.lights)){
 
