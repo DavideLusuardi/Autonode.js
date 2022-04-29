@@ -4,7 +4,7 @@ const Clock =  require('../utils/Clock')
 const Agent = require('../bdi/Agent')
 const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
-const devices = require('../bdi/devices')
+const Device = require('../bdi/Device')
 
 
 
@@ -68,11 +68,11 @@ class House {
             // car: new Observable({ charging: true })
         }
         for (let [key, room] of Object.entries(this.rooms)) {
-            this.devices['lights@'+key] = new devices.Light('lights@'+key, room.name)
-            this.devices['brightness_sensor@'+key] = new devices.BrightnessSensor('brightness_sensor@'+key, room.name)
-            this.devices['presence_detector@'+key] = new devices.PresenceDetector('presence_detector@'+key, room.name)
+            this.devices['lights@'+key] = new Device.Light('lights@'+key, room.name)
+            this.devices['brightness_sensor@'+key] = new Device.BrightnessSensor('brightness_sensor@'+key, room.name)
+            this.devices['presence_detector@'+key] = new Device.PresenceDetector('presence_detector@'+key, room.name)
         }
-        this.devices['lights_TV@living_room'] = new devices.Light('lights_TV@living_room', this.rooms.living_room.name) // TODO: implementare quando si accendono
+        this.devices['lights_TV@living_room'] = new Device.Light('lights_TV@living_room', this.rooms.living_room.name) // TODO: implementare quando si accendono
         
         let windows_in_rooms = {kitchen:2, living_room:2, garage:1, main_bathroom:1, garden:1, stairs_up:1, 
             bedroom1:2, bedroom2:1, bedroom3:1, secondary_bathroom:1, stairs_down:1, corridor:0}
@@ -80,12 +80,12 @@ class House {
         for (let [key, num_windows] of Object.entries(windows_in_rooms)){
             this.rooms[key].windows = num_windows
             for(let i=0; i<num_windows; i++)
-                this.devices['shutter'+(i+1)+'@'+key] = new devices.Shutter('shutter'+(i+1)+'@'+key, this.rooms[key].name)
+                this.devices['shutter'+(i+1)+'@'+key] = new Device.Shutter('shutter'+(i+1)+'@'+key, this.rooms[key].name)
         }
         
-        this.devices['garage_door'] = new devices.GarageDoor('garage_door', this.rooms.garage.name)
-        this.devices['solar_panels'] = new devices.SolarPanels('solar_panels')
-        let energy_monitor = new devices.EnergyConsumption(this.people, this.devices)
+        this.devices['garage_door'] = new Device.GarageDoor('garage_door', this.rooms.garage.name)
+        this.devices['solar_panels'] = new Device.SolarPanels('solar_panels')
+        let energy_monitor = new Device.EnergyConsumption(this.people, this.devices)
 
         for (let [key, device] of Object.entries(this.devices))
             device.initialize(this.people, this.devices)
@@ -97,7 +97,7 @@ class House {
 
 
         // ---------------------------------------------------------------
-        let logger = new devices.Logger(this.people, this.devices, energy_monitor)
+        let logger = new Device.Logger(this.people, this.devices, energy_monitor)
 
         Clock.startTimer()
         // Clock.wallClock()

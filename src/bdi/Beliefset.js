@@ -55,7 +55,7 @@ class Beliefset extends Observable { // Implementation based on Observable
         if (fact.split(' ')[0] == 'not')
             throw('Fact expected, got a negative literal: ' + fact)
 
-        var changed = this.set(fact, value)
+        var changed = this.set(fact, value) // TODO: better eliminate negated entries 
         
         if ( changed )
             for (let obj of fact.split(' ').splice(1))
@@ -91,7 +91,7 @@ class Beliefset extends Observable { // Implementation based on Observable
      * @param  {...String} literals Iterable of literals; intended as a conjunction of literals
      * @returns {boolean} true if verified, otherwise false
      */
-    check (...literals) {
+    check (...literals) { // TODO: implement CNF formula 
         for ( let literal of literals ) {
             let not = literal.split(' ')[0] == 'not'
             let fact = (not?literal.split(' ').splice(1).join(' '):literal)
@@ -109,6 +109,29 @@ class Beliefset extends Observable { // Implementation based on Observable
         }
 
         return true;
+    }
+
+    matchingLiterals(literal_pattern){
+        let pattern_parts = literal_pattern.split(' ') // TODO: strip each part
+        let matching_literals = []
+
+        for(let literal of this.literals){
+            let literal_parts = literal.split(' ')
+
+            if(literal_parts.length != pattern_parts.length)
+                continue
+
+            let found = true
+            for(let i=0; i<pattern_parts.length; i++){
+                if(pattern_parts[i] != '*' && pattern_parts[i] != literal_parts[i]){
+                    found = false
+                    break
+                }
+            }
+            if(found)
+                matching_literals.push(literal)
+        }
+        return matching_literals
     }
 
 }

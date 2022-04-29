@@ -50,5 +50,4 @@ class Goal {
 }
 
 
-
 module.exports = Goal

@@ -17,6 +17,7 @@
 class Observable {
     #values;
     #observers;
+    #id=0;
 
     /**
      * @constructor Observable
@@ -79,12 +80,12 @@ class Observable {
      * @return {Array}    Return an array of [key, value] to iterate over
      */
     get entries () {
-        return Object.entries(this.#values).map( ([key, {value, observers}]) => [key, value] );
+        return Object.entries(this.#values).map( ([key, value]) => [key, value] );
     }
 
-    observeAny (observer) {
-        this.genericObservers.push( observer )
-    }
+    // observeAny (observer) {
+    //     this.genericObservers.push( observer )
+    // }
 
     /**
      * 
@@ -92,8 +93,9 @@ class Observable {
      * @param {observer} observer function(value, key, observable)
      */
     observe (key, observer) {
+        observer.__id = ++this.#id
         this.defineProperty(key)
-        this.#observers[key][observer] = observer
+        this.#observers[key][observer.__id] = observer
     }
 
     /**
@@ -103,7 +105,7 @@ class Observable {
      */
     unobserve (key, observer) {
         if (key in this.#observers)
-            delete this.#observers[key][observer]
+            delete this.#observers[key][observer.__id]
     }
 
     /**
@@ -117,11 +119,13 @@ class Observable {
                 this.unobserve(key, tmpObs)
                 res(value)
             }
+            tmpObs.__id = ++this.#id
             this.observe(key, tmpObs)
         })
     }
 
-    notifyAll(){
+    notifyAll(){ // TODO: remove
+        console.log("notify all")
         for (let [key, value] of Object.entries(this.#values)) {
             for (let obs of Object.values(this.#observers[key])){
                 obs(value, key)

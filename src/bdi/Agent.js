@@ -14,7 +14,7 @@ class Agent {
         /** @type {Beliefset} beliefs */
         this.beliefs = new Beliefset()
 
-        this.beliefs.observeAny( (v,fact) => this.log( 'Beliefset: ' + (v?fact:'not '+fact) ) )
+        // this.beliefs.observeAny( (v,fact) => this.log( 'Beliefset: ' + (v?fact:'not '+fact) ) )
 
         /** @type {Array<Intention>} intentions */
         this.intentions = []
@@ -63,20 +63,6 @@ class Agent {
 
 }
 
-
-
-// const {LightOn} = require('./bdi/Goal')
-// const intentions =  require('./bdi/Intention')
-
-// postSubGoal(new LightOn({l: 'light1'}))
-
-
-// var kitchenAgent = new Agent('kitchen')
-// kitchenAgent.intentions.push(...Object.values(intentions))
-// kitchenAgent.postSubGoal(new LightOn({l: 'light0'}))
-
-// environment.facts.push('in-room kitchen Marco')
-// environment.facts.push('light-on light1')
 
 
 module.exports = Agent
