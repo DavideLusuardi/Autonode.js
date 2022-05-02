@@ -119,7 +119,7 @@ class Observable {
                 this.unobserve(key, tmpObs)
                 res(value)
             }
-            tmpObs.__id = ++this.#id
+            // tmpObs.__id = ++this.#id
             this.observe(key, tmpObs)
         })
     }

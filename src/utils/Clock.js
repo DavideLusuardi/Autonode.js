@@ -38,7 +38,7 @@ class Clock {
             if(mm<60-15)
                 Clock.global.mm += 15
             else {
-                if(hh<24) {
+                if(hh<23) {
                     Clock.global.hh += 1 // increased hh but mm still 45
                     Clock.global.mm = 0 // however, observers are handled as microtask so at the time they are called everything will be sync
                 }
@@ -52,12 +52,19 @@ class Clock {
             // Here, time is logged immediately before any other observable gets updated!
             process.stdout.clearLine(0);
             process.stdout.cursorTo(0);
+            // process.stdout.moveCursor(0, -1) // up one line
+            // process.stdout.clearLine(0);
+
             process.stdout.write( Clock.format() + '\t');
         }
     }
 
     static getTime() {
         return {dd:Clock.global.dd, hh:Clock.global.hh, mm:Clock.global.mm}
+    }
+
+    static getIncrement() {
+        return {dd:0, hh:0, mm:15}
     }
 
 }

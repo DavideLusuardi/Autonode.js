@@ -5,30 +5,32 @@ const Clock = require('../utils/Clock')
 
 
 class SolarPanelDevice extends Observable {
-    constructor(name){
+    constructor(name, electricity_utility){
         let init = {name:name, status: 'inactive', production: 5000}
         super(init)
+
+        this.electricity_utility = electricity_utility
+        this.consumption_callback = () => {
+            let consumption = -this.production/(60/Clock.getIncrement().mm) // calculate consumption every clock increment
+            this.electricity_utility.consumption += consumption
+        }
     }
 
     activate(){
-        this.status = 'active'
+        if(this.status == 'inactive'){
+            this.status = 'active'
+            Clock.global.observe('mm', this.consumption_callback)
+        }
     }
 
     deactivate(){
         this.status = 'inactive'
+        if(this.status == 'active'){
+            this.status = 'inactive'
+            Clock.global.unobserve('mm', this.consumption_callback)
+        }
     }
 
-    initialize(people, devices){
-        Clock.global.observe('hh', (hh, key) => {
-            if(hh >= 8 && hh <= 17){
-                if(this.status == 'inactive')
-                    this.status = 'active'
-            } else {
-                if(this.status == 'active')    
-                    this.status == 'inactive'
-            }
-        })
-    }
 }
 
 
@@ -56,22 +58,9 @@ class SolarPanelMonitorIntention extends Intention {
 
         let promise = new Promise( async res => {
             while (true) {
-                let hh = await Clock.global.notifyChange('hh')
-                
-                if(hh >= 8 && hh <= 17){
-                    if(this.status == 'inactive'){
-                        this.solar_panel.activate()
-                        this.agent.beliefs.declare(`solar_panel_active`)
-                        this.log('solar_panel active')
-                    }
-                } else {
-                    if(this.status == 'active'){
-                        this.solar_panel.deactivate()
-                        this.agent.beliefs.undeclare(`solar_panel_active`)
-                        this.log('solar_panel inactive')
-                    }
-                }
-
+                let status = await this.solar_panel.notifyChange('status')
+                this.agent.beliefs.declare(`solar_panel_active`, status=='active')
+                this.log(`solar_panel ${status}`)
             }
         });
         

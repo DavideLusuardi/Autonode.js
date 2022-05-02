@@ -60,7 +60,7 @@ class SenseLightsIntention extends Intention {
             let lightGoalPromise = new Promise( async res => {
                 while (true) {
                     let status = await l.notifyChange('status')
-                    this.log('sense: light ' + l.name + ' switched ' + status)
+                    this.log('light ' + l.name + ' switched ' + status)
                     this.agent.beliefs.declare('light_on '+l.name, status=='on')
                     this.agent.beliefs.declare('light_off '+l.name, status=='off')
                 }
@@ -105,7 +105,7 @@ class SenseOneLightIntention extends Intention {
     *exec () {
         while (true) {
             let status = yield this.light.notifyChange('status')
-            this.log('sense: light ' + this.light.name + ' switched ' + status)
+            this.log('light ' + this.light.name + ' switched ' + status)
             this.agent.beliefs.declare('light_on '+this.light.name, status=='on')
             this.agent.beliefs.declare('light_off '+this.light.name, status=='off')
         }

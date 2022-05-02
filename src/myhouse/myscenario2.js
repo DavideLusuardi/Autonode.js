@@ -7,13 +7,19 @@ const Intention = require('../bdi/Intention')
 const {Person, PersonDetectionGoal, PersonDetectionIntention} = require('./Person')
 const {BrightnessSensingGoal, BrightnessSensingIntention} = require('./BrightnessSensing')
 const {LightDevice, LightControlGoal, LightControlIntention} = require('./Light')
+const {TelevisionDevice, TelevisionControlGoal, TelevisionControlIntention} = require('./Television')
 const {ShutterDevice, ShutterControlGoal, ShutterControlIntention} = require('./Shutter')
 const {GarageDoorDevice, GarageDoorControlGoal, GarageDoorControlIntention} = require('./GarageDoor')
 const {SolarPanelDevice, SolarPanelMonitorGoal, SolarPanelMonitorIntention} = require('./SolarPanel')
+const {EnergyMonitorGoal, EnergyMonitorIntention} = require('./ResourceMonitor')
 
 class House {
 
     constructor () {
+
+        this.utilities = {
+            electricity: new Observable( { consumption: 0 } )
+        }
 
         // rooms -------------------------------------------------------
         this.rooms = {
@@ -64,10 +70,13 @@ class House {
 
         let lights = {}
         for (let [key, room] of Object.entries(this.rooms)) {
-            lights['light_'+room.name] = new LightDevice('light_'+room.name, room, 10)
+            lights['light_'+room.name] = new LightDevice('light_'+room.name, room, 10, this.utilities.electricity)
         }
-        // this.devices['lights_TV@living_room'] = new Device.Light('lights_TV@living_room', this.rooms.living_room.name) // TODO: implementare quando si accendono
-        this.devices = Object.assign({}, this.devices, lights);
+        this.devices['lights_TV'] = new LightDevice('lights_TV', this.rooms.living_room, 10, this.utilities.electricity) // TODO: implementare quando si accendono
+        // this.devices['lights_stovetop'] = new LightDevice('lights_stovetop', this.rooms.kitchen) // TODO: implementare quando si accendono
+        this.devices = Object.assign({}, this.devices, lights)
+
+        this.devices['television'] = new TelevisionDevice('television', this.rooms.living_room, 50, this.utilities.electricity)
 
         let windows_in_rooms = {kitchen:2, living_room:2, garage:1, main_bathroom:1, garden:1, stairs_up:1, 
             bedroom1:2, bedroom2:1, bedroom3:1, secondary_bathroom:1, stairs_down:1, corridor:0}
@@ -80,10 +89,10 @@ class House {
                 shutters[shutter_name] = new ShutterDevice(shutter_name, this.rooms[key])
             }
         }
-        this.devices = Object.assign({}, this.devices, shutters);
+        this.devices = Object.assign({}, this.devices, shutters)
 
         this.devices['garage_door'] = new GarageDoorDevice('garage_door', this.rooms.garage)
-        this.devices['solar_panels'] = new SolarPanelDevice('solar_panels')
+        this.devices['solar_panels'] = new SolarPanelDevice('solar_panels', this.utilities.electricity)
         // let energy_monitor = new Device.EnergyConsumption(this.people, this.devices)
 
         // for (let [key, device] of Object.entries(this.devices))
@@ -109,12 +118,20 @@ class House {
         this.agents.house_agent.intentions.push(LightControlIntention)
         this.agents.house_agent.postSubGoal(new LightControlGoal(lights, this.rooms, this.people))
 
+        this.agents.house_agent.intentions.push(TelevisionControlIntention)
+        this.agents.house_agent.postSubGoal(new TelevisionControlGoal(this.devices.television, this.people, this.devices.lights_TV))
+
         this.agents.house_agent.intentions.push(ShutterControlIntention)
         this.agents.house_agent.postSubGoal(new ShutterControlGoal(shutters))
 
         this.agents.house_agent.intentions.push(GarageDoorControlIntention)
         this.agents.house_agent.postSubGoal(new GarageDoorControlGoal([this.devices.garage_door]))
 
+        this.agents.house_agent.intentions.push(SolarPanelMonitorIntention)
+        this.agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(this.devices.solar_panels))
+
+        this.agents.house_agent.intentions.push(EnergyMonitorIntention)
+        this.agents.house_agent.postSubGoal(new EnergyMonitorGoal(this.utilities.electricity))
 
         
         // for (let [key, light] of Object.entries(lights)){
@@ -135,14 +152,24 @@ class House {
         // Daily schedule
         Clock.global.observe('mm', (mm, key) => {
             var time = Clock.global
-            if(time.hh==10 && time.mm==0)
+            if(time.hh==1 && time.mm==0)
+                house.people.bob.moveTo(house.rooms.kitchen.name)            
+            if(time.hh==7 && time.mm==0)
+                house.people.bob.moveTo(house.rooms.living_room.name)
+            if(time.hh==8 && time.mm==30)
                 house.people.bob.moveTo(house.rooms.kitchen.name)
-            // if(time.hh==20 && time.mm==30)
-            //     house.people.bob.moveTo(house.rooms.living_room.name)
+            if(time.hh==20 && time.mm==0)
+                house.people.bob.moveTo(house.rooms.living_room.name)
             // if(time.hh==3 && time.mm==0)
             //     house.people.bob.in_room = house.rooms.main_bathroom.name
             // if(time.hh==4 && time.mm==15)
             //     house.people.bob.in_room = house.rooms.living_room.name
+            if(time.hh==8 && time.mm==0)
+                house.devices.solar_panels.activate()
+            if(time.hh==18 && time.mm==0)
+                house.devices.solar_panels.deactivate()
+            
+            
         })
 
 
@@ -175,9 +202,3 @@ class House {
 
 var house = new House()
 house.runScenario1()
-
-
-
-// differenza agente e device
-// logica intention viene da planner?
-// quando intention non funziona?

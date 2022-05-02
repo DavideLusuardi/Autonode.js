@@ -21,7 +21,9 @@ class Intention {
     }
 
     log (...args) {
-        console.log( this.agent.name+'>'+this.constructor.name+'#'+this.id + '\t', ...args) //this.goal.constructor.name+'['+this.goal.id+']'+'>'
+        let prefix = this.agent.name+'>'+this.constructor.name+'#'+this.id
+        prefix += ' '.repeat(Math.max(0, 40-prefix.length))
+        console.log( prefix + '\t', ...args) //this.goal.constructor.name+'['+this.goal.id+']'+'>'
     }
 
 

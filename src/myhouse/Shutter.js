@@ -41,26 +41,13 @@ class ShutterControlIntention extends Intention {
     *exec () {
         var shutter_promises = []
         for (let [name, shutter] of Object.entries(this.shutters)){
-            this.agent.beliefs.declare(`shutter_up ${shutter.name}`, shutter.status=='up') // set initial knowledge // TODO: check if knowledge present
+            this.agent.beliefs.declare(`shutter_up ${shutter.name}`, shutter.status=='up') // set initial knowledge
+            this.controlShutter(shutter, Clock.global.hh)
 
             let shutter_promise = new Promise( async res => {
                 while (true) {
                     let hh = await Clock.global.notifyChange('hh')
-                    
-                    if(hh <= 6 || hh >= 21){
-                        if(shutter.status == 'up'){
-                            shutter.goDown()
-                            this.agent.beliefs.undeclare(`shutter_up ${shutter.name}`)
-                            this.log('shutter ' + shutter.room.name + ' ' + shutter.status)
-                        }
-                    } else {
-                        if(shutter.status == 'down'){
-                            shutter.goUp()
-                            this.agent.beliefs.declare(`shutter_up ${shutter.name}`)
-                            this.log('shutter ' + shutter.room.name + ' ' + shutter.status)
-                        }
-                    }
-
+                    this.controlShutter(shutter, hh)
                 }
             });
 
@@ -68,6 +55,22 @@ class ShutterControlIntention extends Intention {
         }
         
         yield Promise.all(shutter_promises)
+    }
+
+    controlShutter(shutter, hh){
+        if(hh <= 6 || hh >= 21){
+            if(shutter.status == 'up'){
+                shutter.goDown()
+                this.agent.beliefs.undeclare(`shutter_up ${shutter.name}`)
+                this.log('shutter ' + shutter.room.name + ' ' + shutter.status)
+            }
+        } else {
+            if(shutter.status == 'down'){
+                shutter.goUp()
+                this.agent.beliefs.declare(`shutter_up ${shutter.name}`)
+                this.log('shutter ' + shutter.room.name + ' ' + shutter.status)
+            }
+        }
     }
 }
 
