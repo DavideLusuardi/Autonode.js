@@ -93,112 +93,57 @@ class House {
 
         this.devices['garage_door'] = new GarageDoorDevice('garage_door', this.rooms.garage)
         this.devices['solar_panels'] = new SolarPanelDevice('solar_panels', this.utilities.electricity)
-        // let energy_monitor = new Device.EnergyConsumption(this.people, this.devices)
-
-        // for (let [key, device] of Object.entries(this.devices))
-        //     device.initialize(this.people, this.devices)
-        
-        
-        // console.log(JSON.stringify(this.devices, null, 2))
-
-
-        // ---------------------------------------------------------------
-        // let logger = new Device.Logger(this.people, this.devices, energy_monitor)
-
-
-        this.agents = []
-        this.agents.house_agent = new Agent('house_agent')
-
-        this.agents.house_agent.intentions.push(PersonDetectionIntention)
-        this.agents.house_agent.postSubGoal(new PersonDetectionGoal(this.people))
-
-        this.agents.house_agent.intentions.push(BrightnessSensingIntention)
-        this.agents.house_agent.postSubGoal(new BrightnessSensingGoal(this.rooms))
-
-        this.agents.house_agent.intentions.push(LightControlIntention)
-        this.agents.house_agent.postSubGoal(new LightControlGoal(lights, this.rooms, this.people))
-
-        this.agents.house_agent.intentions.push(TelevisionControlIntention)
-        this.agents.house_agent.postSubGoal(new TelevisionControlGoal(this.devices.television, this.people, this.devices.lights_TV))
-
-        this.agents.house_agent.intentions.push(ShutterControlIntention)
-        this.agents.house_agent.postSubGoal(new ShutterControlGoal(shutters))
-
-        this.agents.house_agent.intentions.push(GarageDoorControlIntention)
-        this.agents.house_agent.postSubGoal(new GarageDoorControlGoal([this.devices.garage_door]))
-
-        this.agents.house_agent.intentions.push(SolarPanelMonitorIntention)
-        this.agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(this.devices.solar_panels))
-
-        this.agents.house_agent.intentions.push(EnergyMonitorIntention)
-        this.agents.house_agent.postSubGoal(new EnergyMonitorGoal(this.utilities.electricity))
-
-        
-        // for (let [key, light] of Object.entries(lights)){
-        //     // console.log(light.name)
-        //     light.notifyAll() // refresh devices status
-        // }
-
-
-        // TODO: fix notify all in order to update initial status
-        // for (let [key, person] of Object.entries(this.people))
-        //     person.notifyAll() // refresh person status
-
-
-        Clock.startTimer()
-    }
-
-    runScenario1(){
-        // Daily schedule
-        Clock.global.observe('mm', (mm, key) => {
-            var time = Clock.global
-            if(time.hh==1 && time.mm==0)
-                house.people.bob.moveTo(house.rooms.kitchen.name)            
-            if(time.hh==7 && time.mm==0)
-                house.people.bob.moveTo(house.rooms.living_room.name)
-            if(time.hh==8 && time.mm==30)
-                house.people.bob.moveTo(house.rooms.kitchen.name)
-            if(time.hh==20 && time.mm==0)
-                house.people.bob.moveTo(house.rooms.living_room.name)
-            // if(time.hh==3 && time.mm==0)
-            //     house.people.bob.in_room = house.rooms.main_bathroom.name
-            // if(time.hh==4 && time.mm==15)
-            //     house.people.bob.in_room = house.rooms.living_room.name
-            if(time.hh==8 && time.mm==0)
-                house.devices.solar_panels.activate()
-            if(time.hh==18 && time.mm==0)
-                house.devices.solar_panels.deactivate()
-            
-            
-        })
-
-
-        // var house_agent = new Agent('house_agent')
-
-        // class SetupAlarm extends Goal {}
-
-        // class MyAlarm extends Intention {
-        //     static applicable(goal) {
-        //         return goal instanceof SetupAlarm
-        //     }   
-        //     *exec () {
-        //         while(true) {
-        //             yield Clock.global.notifyChange('mm')
-        //             if (Clock.global.hh == 6) {
-        //                 console.log('ALARM, it\'s 6am!')
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
-
-        // house_agent.intentions.push(MyAlarm)
-
-        // house_agent.postSubGoal(new SetupAlarm({hh:6, mm:0}))
     }
 
 }
 
 
 var house = new House()
-house.runScenario1()
+
+this.agents = []
+this.agents.house_agent = new Agent('house_agent')
+
+this.agents.house_agent.intentions.push(PersonDetectionIntention)
+this.agents.house_agent.postSubGoal(new PersonDetectionGoal(this.people))
+
+this.agents.house_agent.intentions.push(BrightnessSensingIntention)
+this.agents.house_agent.postSubGoal(new BrightnessSensingGoal(this.rooms))
+
+this.agents.house_agent.intentions.push(LightControlIntention)
+this.agents.house_agent.postSubGoal(new LightControlGoal(lights, this.rooms, this.people))
+
+this.agents.house_agent.intentions.push(TelevisionControlIntention)
+this.agents.house_agent.postSubGoal(new TelevisionControlGoal(this.devices.television, this.people, this.devices.lights_TV))
+
+this.agents.house_agent.intentions.push(ShutterControlIntention)
+this.agents.house_agent.postSubGoal(new ShutterControlGoal(shutters))
+
+this.agents.house_agent.intentions.push(GarageDoorControlIntention)
+this.agents.house_agent.postSubGoal(new GarageDoorControlGoal([this.devices.garage_door]))
+
+this.agents.house_agent.intentions.push(SolarPanelMonitorIntention)
+this.agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(this.devices.solar_panels))
+
+this.agents.house_agent.intentions.push(EnergyMonitorIntention)
+this.agents.house_agent.postSubGoal(new EnergyMonitorGoal(this.utilities.electricity))
+
+
+// Daily schedule
+Clock.global.observe('mm', (mm, key) => {
+    var time = Clock.global
+    if(time.hh==1 && time.mm==0)
+        house.people.bob.moveTo(house.rooms.kitchen.name)            
+    if(time.hh==7 && time.mm==0)
+        house.people.bob.moveTo(house.rooms.living_room.name)
+    if(time.hh==8 && time.mm==30)
+        house.people.bob.moveTo(house.rooms.kitchen.name)
+    if(time.hh==20 && time.mm==0)
+        house.people.bob.moveTo(house.rooms.living_room.name)
+
+    if(time.hh==8 && time.mm==0)
+        house.devices.solar_panels.activate()
+    if(time.hh==18 && time.mm==0)
+        house.devices.solar_panels.deactivate()
+})
+
+Clock.startTimer()
