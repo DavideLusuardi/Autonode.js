@@ -62,7 +62,7 @@ class House {
 
         // people -------------------------------------------------------
         this.people = {
-            bob: new Person(this, 'bob', this.rooms.living_room.name),
+            luca: new Person(this, 'luca', this.rooms.living_room.name),
         }
 
         // devices -------------------------------------------------------
@@ -72,8 +72,8 @@ class House {
         for (let [key, room] of Object.entries(this.rooms)) {
             lights['light_'+room.name] = new LightDevice('light_'+room.name, room, 10, this.utilities.electricity)
         }
-        this.devices['lights_TV'] = new LightDevice('lights_TV', this.rooms.living_room, 10, this.utilities.electricity) // TODO: implementare quando si accendono
-        // this.devices['lights_stovetop'] = new LightDevice('lights_stovetop', this.rooms.kitchen) // TODO: implementare quando si accendono
+        this.devices['lights_TV'] = new LightDevice('lights_TV', this.rooms.living_room, 10, this.utilities.electricity)
+        // this.devices['lights_stovetop'] = new LightDevice('lights_stovetop', this.rooms.kitchen) // TODO
         this.devices = Object.assign({}, this.devices, lights)
 
         this.devices['television'] = new TelevisionDevice('television', this.rooms.living_room, 50, this.utilities.electricity)
@@ -132,13 +132,13 @@ this.agents.house_agent.postSubGoal(new EnergyMonitorGoal(this.utilities.electri
 Clock.global.observe('mm', (mm, key) => {
     var time = Clock.global
     if(time.hh==1 && time.mm==0)
-        house.people.bob.moveTo(house.rooms.kitchen.name)            
+        house.people.luca.moveTo(house.rooms.kitchen.name)            
     if(time.hh==7 && time.mm==0)
-        house.people.bob.moveTo(house.rooms.living_room.name)
+        house.people.luca.moveTo(house.rooms.living_room.name)
     if(time.hh==8 && time.mm==30)
-        house.people.bob.moveTo(house.rooms.kitchen.name)
+        house.people.luca.moveTo(house.rooms.kitchen.name)
     if(time.hh==20 && time.mm==0)
-        house.people.bob.moveTo(house.rooms.living_room.name)
+        house.people.luca.moveTo(house.rooms.living_room.name)
 
     if(time.hh==8 && time.mm==0)
         house.devices.solar_panels.activate()

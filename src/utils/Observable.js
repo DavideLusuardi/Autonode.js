@@ -124,18 +124,6 @@ class Observable {
         })
     }
 
-    notifyAll(){ // TODO: remove
-        for (let [key, value] of Object.entries(this.#values)) {
-            for (let [id,obs] of Object.entries(this.#observers[key])){
-                obs(value, key)
-            }
-        }
-    }
-
-    getObservers(){
-        return this.#observers
-    }
-
 }
 
 

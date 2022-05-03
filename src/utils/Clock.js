@@ -59,10 +59,16 @@ class Clock {
         }
     }
 
+    /**
+     * @returns a copy of the current time
+     */
     static getTime() {
         return {dd:Clock.global.dd, hh:Clock.global.hh, mm:Clock.global.mm}
     }
 
+    /**
+     * @returns the increment of the clock at each time step
+     */
     static getIncrement() {
         return {dd:0, hh:0, mm:15}
     }

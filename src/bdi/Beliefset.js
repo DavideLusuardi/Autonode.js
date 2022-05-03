@@ -55,7 +55,7 @@ class Beliefset extends Observable { // Implementation based on Observable
         if (fact.split(' ')[0] == 'not')
             throw('Fact expected, got a negative literal: ' + fact)
 
-        var changed = this.set(fact, value) // TODO: better eliminate negated entries 
+        var changed = this.set(fact, value)
         
         if ( changed )
             for (let obj of fact.split(' ').splice(1))
@@ -111,6 +111,11 @@ class Beliefset extends Observable { // Implementation based on Observable
         return true;
     }
 
+    /**
+     * Find the matching literals in the knowledge base.
+     * @param {String} literal_pattern 
+     * @returns a list of matching literals
+     */
     matchingLiterals(literal_pattern){
         let pattern_parts = literal_pattern.split(' ') // TODO: strip each part
         let matching_literals = []
