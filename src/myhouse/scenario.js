@@ -28,13 +28,12 @@ class House {
             garage: { name: 'garage', floor: 0, doors_to:[]},
             main_bathroom: { name: 'main_bathroom', floor: 0, doors_to:[]},
             garden: { name: 'garden', floor: 0, doors_to:[]},
-            stairs_up: { name: 'stairs_up', floor: 0, doors_to:[]},
+            stairs: { name: 'stairs', doors_to:[]},
 
             bedroom1: { name: 'bedroom1', floor: 1, doors_to:[]},
             bedroom2: { name: 'bedroom2', floor: 1, doors_to:[]},
             bedroom3: { name: 'bedroom3', floor: 1, doors_to:[]},
             secondary_bathroom: { name: 'secondary_bathroom', floor: 1, doors_to:[]},
-            stairs_down: { name: 'stairs_down', floor: 1, doors_to:[]},
             corridor: { name: 'corridor', floor: 1, doors_to:[]},
         }
 
@@ -43,13 +42,13 @@ class House {
             [this.rooms.living_room, this.rooms.main_bathroom],
             [this.rooms.living_room, this.rooms.garage],
             [this.rooms.living_room, this.rooms.garden],
-            [this.rooms.living_room, this.rooms.stairs_up],
+            [this.rooms.living_room, this.rooms.stairs],
 
             [this.rooms.corridor, this.rooms.bedroom1],
             [this.rooms.corridor, this.rooms.bedroom2],
             [this.rooms.corridor, this.rooms.bedroom3],
             [this.rooms.corridor, this.rooms.secondary_bathroom],
-            [this.rooms.corridor, this.rooms.stairs_down],
+            [this.rooms.corridor, this.rooms.stairs],
         ]
 
         doors_to.forEach(pair => {
@@ -62,7 +61,7 @@ class House {
 
         // people -------------------------------------------------------
         this.people = {
-            luca: new Person(this, 'luca', this.rooms.living_room.name),
+            luca: new Person(this, 'luca', this.rooms.main_bathroom.name),
         }
 
         // devices -------------------------------------------------------
@@ -78,8 +77,8 @@ class House {
 
         this.devices['television'] = new TelevisionDevice('television', this.rooms.living_room, 50, this.utilities.electricity)
 
-        let windows_in_rooms = {kitchen:2, living_room:2, garage:1, main_bathroom:1, garden:1, stairs_up:1, 
-            bedroom1:2, bedroom2:1, bedroom3:1, secondary_bathroom:1, stairs_down:1, corridor:0}
+        let windows_in_rooms = {kitchen:2, living_room:2, garage:1, main_bathroom:1, garden:1, stairs:1, 
+            bedroom1:2, bedroom2:1, bedroom3:1, secondary_bathroom:1, corridor:0}
         
         this.shutters = {}
         for (let [key, num_windows] of Object.entries(windows_in_rooms)){
@@ -131,20 +130,15 @@ agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity
 // Daily schedule
 Clock.global.observe('mm', (mm, key) => {
     var time = Clock.global
-    if(time.hh==1 && time.mm==0)
-        house.people.luca.moveTo(house.rooms.kitchen.name)            
-    if(time.hh==7 && time.mm==0)
+    if(time.hh==7 && time.mm==0){
         house.people.luca.moveTo(house.rooms.living_room.name)
+    }
     if(time.hh==8 && time.mm==30)
         house.people.luca.moveTo(house.rooms.kitchen.name)
     if(time.hh==20 && time.mm==0)
         house.people.luca.moveTo(house.rooms.living_room.name)
-    if(time.hh==23 && time.mm==0){
-        house.people.luca.moveTo(house.rooms.stairs_up.name)
-        house.people.luca.moveTo(house.rooms.stairs_down.name)
-        house.people.luca.moveTo(house.rooms.corridor.name)
-        house.people.luca.moveTo(house.rooms.bedroom1.name)
-    }
+    if(time.hh==23 && time.mm==0)
+        house.people.luca.moveTo(house.rooms.main_bathroom.name)
 
     if(time.hh==8 && time.mm==0)
         house.devices.solar_panels.activate()

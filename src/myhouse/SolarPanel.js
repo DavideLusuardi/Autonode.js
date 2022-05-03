@@ -24,7 +24,6 @@ class SolarPanelDevice extends Observable {
     }
 
     deactivate(){
-        this.status = 'inactive'
         if(this.status == 'active'){
             this.status = 'inactive'
             Clock.global.unobserve('mm', this.consumption_callback)

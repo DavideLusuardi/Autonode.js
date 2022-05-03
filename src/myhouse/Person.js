@@ -11,12 +11,12 @@ class Person extends Observable {
     }
     moveTo (to) {
         if ( this.house.rooms[this.in_room].doors_to.includes(to) ) {
+            // console.log(this.name, 'moved from', this.in_room, 'to', to)
             this.in_room = to
-            // console.log(this.name, '\t moved from', this.in_room, 'to', to)
             return true
         }
         else {
-            // console.log(this.name, '\t failed moving from', this.in_room, 'to', to)
+            console.log(this.name, 'failed moving from', this.in_room, 'to', to)
             return false
         }
     }
@@ -51,7 +51,7 @@ class PersonDetectionIntention extends Intention {
             let person_promise = new Promise( async res => {
                 while (true) {
                     let room = await person.notifyChange('in_room')
-                    this.log(person.name + ' moved into room ' + room)
+                    this.log(person.name + ' moved into ' + room)
                     for(let literal of this.agent.beliefs.matchingLiterals(`person_in_room ${person.name} *`)){
                         this.agent.beliefs.undeclare(literal)
                     }
