@@ -6,7 +6,7 @@ const Clock = require('../utils/Clock')
 
 class GarageDoorDevice extends Observable {
     constructor(name, room){
-        let init = {name:name, room: room, status: 'closed'}
+        let init = {name:name, room: room, status: 'opened'}
         super(init)
     }
 

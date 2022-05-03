@@ -5,7 +5,6 @@ University of Trento - Trento, 2022
 Davide Lusuardi - davide.lusuardi@studenti.unitn.it
 
 # Description
-Implementation of the smart house.<br>
 The [scenario](src/myhouse/scenario.js) proposed implements a smart 
 house composed of two floors, the garage and the garden.
 The lights are present in each room and for each window there is an electric shutter.
@@ -75,7 +74,7 @@ Implementation of the goal `TelevisionControlGoal`.
 
 ### class [`SolarPanelMonitorGoal`](src/myhouse/SolarPanel.js)
 Goal: monitor the solar panel status.
-### class [`TelevisionControlIntention`](src/myhouse/SolarPanel.js)
+### class [`SolarPanelMonitorIntention`](src/myhouse/SolarPanel.js)
 Implementation of the goal `SolarPanelMonitorGoal`.
 
 ### class [`EnergyMonitorGoal`](src/myhouse/ResourceMonitor.js)

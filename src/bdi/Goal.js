@@ -24,7 +24,7 @@ class Goal {
     }
 
     toString() {
-        return '#'+this.id + "_" + this.constructor.name + JSON.stringify(this.parameters)
+        return '#'+this.id + "_" + this.constructor.name // + JSON.stringify(this.parameters)
     }
 
     // get precondition () {

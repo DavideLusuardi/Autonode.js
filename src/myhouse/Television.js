@@ -101,6 +101,7 @@ class TelevisionControlIntention extends Intention {
             this.log('television on, channel News24')
         }
 
+        // TODO: turn off the other lights
         if(someone_in_livingroom && Clock.global.hh >= 20){
             let channel = this.television.turnOn()
             this.lights_TV.turnOn()

@@ -68,28 +68,28 @@ class House {
         // devices -------------------------------------------------------
         this.devices = {}
 
-        let lights = {}
+        this.lights = {}
         for (let [key, room] of Object.entries(this.rooms)) {
-            lights['light_'+room.name] = new LightDevice('light_'+room.name, room, 10, this.utilities.electricity)
+            this.lights['light_'+room.name] = new LightDevice('light_'+room.name, room, 10, this.utilities.electricity)
         }
         this.devices['lights_TV'] = new LightDevice('lights_TV', this.rooms.living_room, 10, this.utilities.electricity)
         // this.devices['lights_stovetop'] = new LightDevice('lights_stovetop', this.rooms.kitchen) // TODO
-        this.devices = Object.assign({}, this.devices, lights)
+        this.devices = Object.assign({}, this.devices, this.lights)
 
         this.devices['television'] = new TelevisionDevice('television', this.rooms.living_room, 50, this.utilities.electricity)
 
         let windows_in_rooms = {kitchen:2, living_room:2, garage:1, main_bathroom:1, garden:1, stairs_up:1, 
             bedroom1:2, bedroom2:1, bedroom3:1, secondary_bathroom:1, stairs_down:1, corridor:0}
         
-        let shutters = {}
+        this.shutters = {}
         for (let [key, num_windows] of Object.entries(windows_in_rooms)){
             this.rooms[key].windows = num_windows
             for(let i=0; i<num_windows; i++){
                 let shutter_name = 'shutter'+(num_windows>1?(i+1):'')+'_'+key                
-                shutters[shutter_name] = new ShutterDevice(shutter_name, this.rooms[key])
+                this.shutters[shutter_name] = new ShutterDevice(shutter_name, this.rooms[key])
             }
         }
-        this.devices = Object.assign({}, this.devices, shutters)
+        this.devices = Object.assign({}, this.devices, this.shutters)
 
         this.devices['garage_door'] = new GarageDoorDevice('garage_door', this.rooms.garage)
         this.devices['solar_panels'] = new SolarPanelDevice('solar_panels', this.utilities.electricity)
@@ -100,32 +100,32 @@ class House {
 
 var house = new House()
 
-this.agents = []
-this.agents.house_agent = new Agent('house_agent')
+let agents = []
+agents.house_agent = new Agent('house_agent')
 
-this.agents.house_agent.intentions.push(PersonDetectionIntention)
-this.agents.house_agent.postSubGoal(new PersonDetectionGoal(this.people))
+agents.house_agent.intentions.push(PersonDetectionIntention)
+agents.house_agent.postSubGoal(new PersonDetectionGoal(house.people))
 
-this.agents.house_agent.intentions.push(BrightnessSensingIntention)
-this.agents.house_agent.postSubGoal(new BrightnessSensingGoal(this.rooms))
+agents.house_agent.intentions.push(BrightnessSensingIntention)
+agents.house_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
 
-this.agents.house_agent.intentions.push(LightControlIntention)
-this.agents.house_agent.postSubGoal(new LightControlGoal(lights, this.rooms, this.people))
+agents.house_agent.intentions.push(LightControlIntention)
+agents.house_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people))
 
-this.agents.house_agent.intentions.push(TelevisionControlIntention)
-this.agents.house_agent.postSubGoal(new TelevisionControlGoal(this.devices.television, this.people, this.devices.lights_TV))
+agents.house_agent.intentions.push(TelevisionControlIntention)
+agents.house_agent.postSubGoal(new TelevisionControlGoal(house.devices.television, house.people, house.devices.lights_TV))
 
-this.agents.house_agent.intentions.push(ShutterControlIntention)
-this.agents.house_agent.postSubGoal(new ShutterControlGoal(shutters))
+agents.house_agent.intentions.push(ShutterControlIntention)
+agents.house_agent.postSubGoal(new ShutterControlGoal(house.shutters))
 
-this.agents.house_agent.intentions.push(GarageDoorControlIntention)
-this.agents.house_agent.postSubGoal(new GarageDoorControlGoal([this.devices.garage_door]))
+agents.house_agent.intentions.push(GarageDoorControlIntention)
+agents.house_agent.postSubGoal(new GarageDoorControlGoal([house.devices.garage_door]))
 
-this.agents.house_agent.intentions.push(SolarPanelMonitorIntention)
-this.agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(this.devices.solar_panels))
+agents.house_agent.intentions.push(SolarPanelMonitorIntention)
+agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(house.devices.solar_panels))
 
-this.agents.house_agent.intentions.push(EnergyMonitorIntention)
-this.agents.house_agent.postSubGoal(new EnergyMonitorGoal(this.utilities.electricity))
+agents.house_agent.intentions.push(EnergyMonitorIntention)
+agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity))
 
 
 // Daily schedule
@@ -139,6 +139,12 @@ Clock.global.observe('mm', (mm, key) => {
         house.people.luca.moveTo(house.rooms.kitchen.name)
     if(time.hh==20 && time.mm==0)
         house.people.luca.moveTo(house.rooms.living_room.name)
+    if(time.hh==23 && time.mm==0){
+        house.people.luca.moveTo(house.rooms.stairs_up.name)
+        house.people.luca.moveTo(house.rooms.stairs_down.name)
+        house.people.luca.moveTo(house.rooms.corridor.name)
+        house.people.luca.moveTo(house.rooms.bedroom1.name)
+    }
 
     if(time.hh==8 && time.mm==0)
         house.devices.solar_panels.activate()
