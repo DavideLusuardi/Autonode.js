@@ -2,11 +2,12 @@ const Intention = require('../bdi/Intention')
 const PddlDomain = require('./PddlDomain')
 const PddlProblem = require('./PddlProblem')
 const execFile = require('child_process').execFile;
-const PlanningGoal =  require('../planning/PlanningGoal')
+const pddlActionGoal =  require('./actions/pddlActionGoal')
+const BlackboxGoal =  require('./BlackboxGoal')
 
 
 
-function blackboxGenerator (intentions = []) {
+function blackboxIntentionGenerator (intentions = []) {
 
     var Blackbox = class extends Intention {
         
@@ -26,7 +27,7 @@ function blackboxGenerator (intentions = []) {
         }
 
         static applicable (goal) {
-            return goal instanceof PlanningGoal
+            return goal instanceof BlackboxGoal
         }
 
         async blackboxExec (domainFile, problemFile) {
@@ -71,7 +72,13 @@ function blackboxGenerator (intentions = []) {
                 var args = line
                 // console.log(number, action, args)
                 var intentionClass = this.constructor.getAction(action)
-                var intentionInstance = new intentionClass(this.agent, new PlanningGoal({args: args}) )
+                var mappedArgs = {}
+                for (let index = 0; index < intentionClass.parameters.length; index++) {
+                    let k = intentionClass.parameters[index]
+                    let v = args[index]
+                    mappedArgs[k] = v
+                }
+                var intentionInstance = new intentionClass(this.agent, new pddlActionGoal( {args: mappedArgs} ) )
                 this.plan.push({parallel: number==previousNumber, intention: intentionInstance});
             }
             
@@ -102,6 +109,7 @@ function blackboxGenerator (intentions = []) {
                     yield Promise.all(previousStepGoals)
                     previousStepGoals = [ step.intention.run().catch( err => err ) ]
                 }
+                this.log(step.intention.toString())
             }
 
             // wait for last steps to complete before finish blackbox plan execution intention
@@ -129,4 +137,4 @@ function blackboxGenerator (intentions = []) {
 
 
 
-module.exports = blackboxGenerator
+module.exports = blackboxIntentionGenerator

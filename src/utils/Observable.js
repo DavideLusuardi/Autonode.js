@@ -80,7 +80,7 @@ class Observable {
      * @return {Array}    Return an array of [key, value] to iterate over
      */
     get entries () {
-        return Object.entries(this.#values).map( ([key, value]) => [key, value] );
+        return Object.entries(this.#values);
     }
 
     // observeAny (observer) {
