@@ -34,7 +34,7 @@ function blackboxIntentionGenerator (intentions = []) {
 
             var result = '';
             
-            var child = execFile('./bin/blackbox.exe', ['-o', domainFile, '-f', problemFile]);
+            var child = execFile('./bin/blackbox', ['-o', domainFile, '-f', problemFile]);
 
             child.stdout.on('data', function(data) {
                 result += data;

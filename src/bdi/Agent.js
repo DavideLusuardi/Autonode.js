@@ -8,8 +8,9 @@ const Intention = require('./Intention');
  */
 class Agent {
 
-    constructor (name) {
+    constructor (name, devices={}) {
         this.name = name
+        this.devices = devices
 
         /** @type {Beliefset} beliefs */
         this.beliefs = new Beliefset()
