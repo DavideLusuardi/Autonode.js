@@ -1,5 +1,6 @@
 const pddlActionIntention = require('../pddl/actions/pddlActionIntention')
 const Observable =  require('../utils/Observable')
+const Agent = require('../bdi/Agent')
 
 class VacuumCleanerDevice extends Observable {
     constructor(name, room){
@@ -50,5 +51,22 @@ class Move extends pddlActionIntention {
 }
 
 
+class TurnLightOn extends pddlActionIntention {
+
+    *exec () {
+        this.agent.agents.house_agent.perform... // perform turn on light from another agent 
+        for ( let b of this.effect )
+            this.agent.beliefs.apply(b)
+        yield new Promise(res=>setTimeout(res,100))
+        this.log('effects applied')
+    }
+
+    static parameters = ['r1', 'r2']
+    static precondition = [ ['at', 'r1'], ['connected', 'r1', 'r2'] ]
+    static effect = [ ['not at', 'r1'], ['at', 'r2'] ]
+
+}
 
 module.exports = {VacuumCleanerDevice, Suck, Move}
+
+// TODO: pddlActionIntention get argument of action

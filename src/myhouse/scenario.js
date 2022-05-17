@@ -105,6 +105,23 @@ class House {
 }
 
 
+class HouseAgent extends Agent {
+    constructor (name, agents={}, devices={}) {
+        super(name, agents, devices)
+
+        this.actions = {}
+    }
+
+    turnOnLight(light_name){
+        for(let [d_name, d] of Object.entries(devices)){
+            if(d.name == light_name){
+                this.intentions.push(TODO)
+            }
+        }
+    }
+}
+
+
 var house = new House()
 let agents = []
 
@@ -137,7 +154,7 @@ agents.house_agent = new Agent('house_agent')
 
 
 // ------------------------lawn mower agent--------------------------------------------------------------------
-// agents.lawn_mower = new Agent('lawn_mower', {lawn_mower:house.devices.lawn_mower})
+// agents.lawn_mower = new Agent('lawn_mower', agents, house.devices)
 // agents.lawn_mower.beliefs.declare('not-raining')
 // agents.lawn_mower.beliefs.declare('not-people-detected')
 // agents.lawn_mower.beliefs.declare('at a11')
@@ -159,7 +176,7 @@ agents.house_agent = new Agent('house_agent')
 
 
 // ------------------------vacuum cleaner agent--------------------------------------------------------------------
-agents.vacuum_cleaner = new Agent('vacuum_cleaner', {vacuum_cleaner:house.devices.vacuum_cleaner})
+agents.vacuum_cleaner = new Agent('vacuum_cleaner', agents, house.devices)
 agents.vacuum_cleaner.beliefs.declare(`at ${house.devices.vacuum_cleaner.at.name}`)
 
 let rooms = [house.rooms.living_room, house.rooms.kitchen, house.rooms.main_bathroom, house.rooms.garage]
@@ -202,3 +219,9 @@ Clock.global.observe('mm', (mm, key) => {
 })
 
 Clock.startTimer()
+
+
+
+// TODO: pddlActionIntention get arguments of action
+// TODO: implement perform of agent
+// TODO: implement many intention for the same goal

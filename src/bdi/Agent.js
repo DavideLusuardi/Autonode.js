@@ -8,9 +8,11 @@ const Intention = require('./Intention');
  */
 class Agent {
 
-    constructor (name, devices={}) {
+    constructor (name, agents={}, devices={}) {
         this.name = name
+        this.agents = agents
         this.devices = devices
+        this.actions = {}
 
         /** @type {Beliefset} beliefs */
         this.beliefs = new Beliefset()
@@ -24,6 +26,30 @@ class Agent {
     log (...args) {
         console.log( this.name + '\t\t', ...args )
     }
+
+    /**
+     * 
+     * @param {...String} literals Iterable of literals; intended as a conjunction of literals 
+     * @returns {boolean} true if verified, otherwise false
+     */
+    ask_if(...literals){
+        return this.beliefs.check(literals)
+    }
+
+    /**
+     * 
+     * @param {...String} literals Iterable of literals; intended as a conjunction of literals 
+     */
+    tell(...literals){
+        this.beliefs.apply(literals)
+    }
+
+
+    // TODO
+    perform(){
+
+    }
+
 
     async postSubGoal (subGoal) {
         
