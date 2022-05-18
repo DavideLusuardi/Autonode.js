@@ -52,17 +52,15 @@ class Clock {
             // Here, time is logged immediately before any other observable gets updated!
             process.stdout.clearLine(0);
             process.stdout.cursorTo(0);
-            // process.stdout.moveCursor(0, -1) // up one line
-            // process.stdout.clearLine(0);
-
             process.stdout.write( Clock.format() + '\t');
         }
     }
 
+    
     /**
      * @returns a copy of the current time
      */
-    static getTime() {
+     static getTime() {
         return {dd:Clock.global.dd, hh:Clock.global.hh, mm:Clock.global.mm}
     }
 

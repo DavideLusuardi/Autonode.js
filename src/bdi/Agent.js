@@ -1,7 +1,9 @@
 const Beliefset =  require('./Beliefset')
 const Intention = require('./Intention');
+const chalk = require('chalk');
 
-
+var nextId = 0
+const colors = ['red', 'blue', 'green', 'yellow', 'magenta', 'cyan', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright']
 
 /**
  * @class Agent
@@ -10,6 +12,8 @@ class Agent {
 
     constructor (name, agents={}, devices={}) {
         this.name = name
+        this.id = nextId++
+
         this.agents = agents
         this.devices = devices
         this.actions = {}
@@ -17,22 +21,40 @@ class Agent {
         /** @type {Beliefset} beliefs */
         this.beliefs = new Beliefset()
 
-        // this.beliefs.observeAny( (v,fact) => this.log( 'Belief changed: ' + (v?fact:'not '+fact) ) )
+        this.beliefs.observeAny( (v,fact) => this.log( 'Belief changed: ' + (v?fact:'not '+fact) ) )
 
         /** @type {Array<Intention>} intentions */
         this.intentions = []
     }
 
-    log (...args) {
-        console.log( this.name + '\t\t', ...args )
+
+    headerError (header = '', ...args) {
+        header += ' '.repeat(Math.max(30-header.length,0))
+        console.error(chalk.bold.italic[colors[this.id%colors.length]](header, ...args))
     }
+
+    error (...args) {
+        this.headerError(this.name, ...args)
+    }
+
+
+
+    headerLog (header = '', ...args) {
+        header += ' '.repeat(Math.max(30-header.length,0))
+        console.log(chalk[colors[this.id%colors.length]](header, ...args))
+    }
+
+    log (...args) {
+        this.headerLog(this.name, ...args)
+    }
+
 
     /**
      * 
      * @param {...String} literals Iterable of literals; intended as a conjunction of literals 
      * @returns {boolean} true if verified, otherwise false
      */
-    ask_if(...literals){
+    ask_if(...literals){ // TODO
         return this.beliefs.check(literals)
     }
 
@@ -40,7 +62,7 @@ class Agent {
      * 
      * @param {...String} literals Iterable of literals; intended as a conjunction of literals 
      */
-    tell(...literals){
+    tell(...literals){ // TODO
         this.beliefs.apply(literals)
     }
 
@@ -69,14 +91,16 @@ class Agent {
     
             var intention = new intentionClass(this, subGoal)
             
-            var success = await intention.run().catch( err => {this.log('Error in run() intention:', err)} )
+            var success = await intention.run().catch( err => {
+                this.error('Failed to use intention', intentionClass.name, 'to achieve goal', subGoal.toString() + ':', err.message || err || 'undefined error')
+                this.error( err.stack || err || 'undefined error');
+            } )
     
             if ( success ) {
                 this.log('Succesfully used intention', intentionClass.name, 'to achieve goal', subGoal.toString())
                 return Promise.resolve(true) // same as: return true;
             }
             else {
-                this.log('Failed to use intention', intentionClass.name, 'to achieve goal', subGoal.toString())
                 continue // retrying
             }
 
@@ -90,6 +114,20 @@ class Agent {
 
 }
 
+
+
+// const {LightOn} = require('./bdi/Goal')
+// const intentions =  require('./bdi/Intention')
+
+// postSubGoal(new LightOn({l: 'light1'}))
+
+
+// var kitchenAgent = new Agent('kitchen')
+// kitchenAgent.intentions.push(...Object.values(intentions))
+// kitchenAgent.postSubGoal(new LightOn({l: 'light0'}))
+
+// environment.facts.push('in-room kitchen Marco')
+// environment.facts.push('light-on light1')
 
 
 module.exports = Agent

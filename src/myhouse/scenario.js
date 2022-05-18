@@ -1,11 +1,11 @@
-const Beliefset =  require('../bdi/Beliefset')
-const Observable =  require('../utils/Observable')
-const Clock =  require('../utils/Clock')
 const Agent = require('../bdi/Agent')
+const Beliefset =  require('../bdi/Beliefset')
 const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
-const BlackboxGoal = require('../pddl/BlackboxGoal')
-const BlackboxIntentionGenerator = require('../pddl/BlackboxIntentionGenerator')
+const Observable =  require('../utils/Observable')
+const Clock =  require('../utils/Clock')
+const PlanningGoal = require('../pddl/PlanningGoal')
+
 
 const {Person, PersonDetectionGoal, PersonDetectionIntention} = require('./Person')
 const {BrightnessSensingGoal, BrightnessSensingIntention} = require('./BrightnessSensing')
@@ -167,12 +167,13 @@ agents.house_agent = new Agent('house_agent')
 // for(let pair of connected_pairs)
 //     agents.lawn_mower.beliefs.declare('connected '+pair)
 
-
-// agents.lawn_mower.intentions.push(BlackboxIntentionGenerator([LawnMower.Cut, LawnMower.Move]))
+// let {PlanningIntention} = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
+// agents.lawn_mower.intentions.push(PlanningIntention)
+// // agents.lawn_mower.intentions.push(Blackbox([LawnMower.Cut, LawnMower.Move]))
 // // console.log('agents.lawn_mower entries', agents.lawn_mower.beliefs.entries)
 // // console.log('agents.lawn_mower literals', agents.lawn_mower.beliefs.literals)
 // let lawn_mower_goal = locations.map(a => { return `not (tall-grass ${a})`} )
-// agents.lawn_mower.postSubGoal( new BlackboxGoal( { goal: lawn_mower_goal } ) )
+// agents.lawn_mower.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
 
 
 // ------------------------vacuum cleaner agent--------------------------------------------------------------------
@@ -191,10 +192,10 @@ for(let pair of connected_rooms){
     agents.vacuum_cleaner.beliefs.declare(`connected ${pair[1].name} ${pair[0].name}`)
 }
 
-
-agents.vacuum_cleaner.intentions.push(BlackboxIntentionGenerator([VacuumCleaner.Suck, VacuumCleaner.Move]))
+let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
+agents.vacuum_cleaner.intentions.push(PlanningIntention)
 let vacuum_cleaner_goal = rooms.map(r => { return `not (dirt ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner.at.name}`])
-agents.vacuum_cleaner.postSubGoal( new BlackboxGoal( { goal: vacuum_cleaner_goal } ) )
+agents.vacuum_cleaner.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
 
 
 

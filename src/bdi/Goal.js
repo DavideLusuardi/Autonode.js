@@ -24,7 +24,7 @@ class Goal {
     }
 
     toString() {
-        return '#'+this.id + "_" + this.constructor.name // + JSON.stringify(this.parameters)
+        return this.constructor.name + '#'+this.id + JSON.stringify(this.parameters) //+ this.effect.map(e=>'('+e+')').join('')
     }
 
     // get precondition () {
@@ -48,6 +48,7 @@ class Goal {
     //         beliefSet.apply(b)
     // }
 }
+
 
 
 module.exports = Goal

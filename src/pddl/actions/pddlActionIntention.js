@@ -18,13 +18,14 @@ class pddlActionIntention extends Intention {
     // }
 
     toString() {
-        return this.constructor.name + '#'+this.id + ' effect:' + this.effect
+        // return this.constructor.name + '#'+this.id + ' effect:' + this.effect
+        return '(' + this.constructor.name + ' ' + Object.values(this.goal.parameters).join(' ') + ')' + ' Effect: ' + this.effect
     }
 
 
 
     get precondition () {
-        return pddlActionIntention.ground(this.constructor.precondition, this.goal.parameters.args)
+        return pddlActionIntention.ground(this.constructor.precondition, this.goal.parameters)
     }
 
     checkPrecondition () {
@@ -34,7 +35,7 @@ class pddlActionIntention extends Intention {
 
 
     get effect () {
-        return pddlActionIntention.ground(this.constructor.effect, this.goal.parameters.args)
+        return pddlActionIntention.ground(this.constructor.effect, this.goal.parameters)
     }
 
     checkEffect () {

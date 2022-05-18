@@ -83,10 +83,14 @@ class Observable {
         return Object.entries(this.#values);
     }
 
-    // observeAny (observer) {
-    //     this.genericObservers.push( observer )
-    // }
-
+    /**
+     * 
+     * @param {observer} observer function(value, key, observable)
+     */
+    observeAny (observer) {
+        this.genericObservers.push( observer )
+    }
+    
     /**
      * 
      * @param {*} key 
@@ -115,12 +119,25 @@ class Observable {
      */
     async notifyChange (key) {
         return new Promise( res => {
-            var tmpObs = (value, key) => {
+            var tmpObs = (value, key, observer) => {
                 this.unobserve(key, tmpObs)
                 res(value)
             }
-            // tmpObs.__id = ++this.#id
             this.observe(key, tmpObs)
+        })
+    }
+
+    
+    /**
+     * 
+     * @returns {Promise} Promise that resolves when any among the observed values changes
+     */
+     async notifyAnyChange () {
+        return new Promise( res => {
+            var tmpObs = (value, key, observer) => {
+                res(value)
+            }
+            this.observeAny(tmpObs)
         })
     }
 

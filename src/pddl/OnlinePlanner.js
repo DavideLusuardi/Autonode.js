@@ -1,15 +1,15 @@
 const Intention = require('../bdi/Intention')
 const PddlDomain = require('./PddlDomain')
 const PddlProblem = require('./PddlProblem')
-const execFile = require('child_process').execFile;
 const pddlActionGoal =  require('./actions/pddlActionGoal')
-const BlackboxGoal =  require('./BlackboxGoal')
+const PlanningGoal =  require('./PlanningGoal')
+const fetch = require('node-fetch') // import fetch from 'node-fetch';
 
 
 
-function blackboxIntentionGenerator (intentions = []) {
+function setup (intentions = []) {
 
-    var Blackbox = class extends Intention {
+    var OnlinePlanning = class extends Intention {
         
         constructor (agent, goal) {
             super(agent, goal)
@@ -27,47 +27,47 @@ function blackboxIntentionGenerator (intentions = []) {
         }
 
         static applicable (goal) {
-            return goal instanceof BlackboxGoal
+            return goal instanceof PlanningGoal
         }
 
-        async blackboxExec (domainFile, problemFile) {
+        async doPlan (domainFile, problemFile) {
 
-            var result = '';
+            // console.log(JSON.stringify( {domain: domainFile.content, problem: problemFile.content} ))
+            var res = await fetch("http://solver.planning.domains/solve", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify( {domain: domainFile.content, problem: problemFile.content} )
+            }).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                return res;
+            })
             
-            var child = execFile('./bin/blackbox', ['-o', domainFile, '-f', problemFile]);
+            // console.log(res);
+            // console.log(res.result.plan);
 
-            child.stdout.on('data', function(data) {
-                result += data;
-            });
+            if (!res.result.plan && res.result.output.split('\n')[0] != ' --- OK.') {
+                this.log('No plan found')
+                this.log(res)
+                throw new Error('Plan not found');
+            }
 
-            await new Promise( res => child.on('close', res) );
-
-            // console.log(result);
-            
             this.log('Plan found:')
             var planStruct = []
-            var planBeginned = false
-            for (let line of result.split('\n')) {
-                // this.log(line)
-                if (line=='Begin plan')
-                    planBeginned = true
-                else if (line=='End plan')
-                    break;
-                else if (planBeginned) {
-                    this.log(line)
-                    planStruct.push(line.replace('(','').replace(')','').split(' '));
+
+            if (res.result.plan) {
+                for (let step of res.result.plan) {
+                    let s = step.name.replace('(','').replace(')','').split(' ')
+                    this.log('- ' + step.name)
+                    planStruct.push(s);
                 }
             }
 
-            if (!planBeginned) {
-                this.log('no plan found')
-                this.log(result)
-                return Promise.reject('Plan not found');
-            }
-
-            var previousNumber = 0
+            // var previousNumber = 0
             for (let line of planStruct) {
-                var number = line.shift()
+                // var number = line.shift()
                 var action = line.shift()
                 var args = line
                 // console.log(number, action, args)
@@ -78,8 +78,8 @@ function blackboxIntentionGenerator (intentions = []) {
                     let v = args[index]
                     mappedArgs[k] = v
                 }
-                var intentionInstance = new intentionClass(this.agent, new pddlActionGoal( {args: mappedArgs} ) )
-                this.plan.push({parallel: number==previousNumber, intention: intentionInstance});
+                var intentionInstance = new intentionClass(this.agent, new pddlActionGoal(mappedArgs) )
+                this.plan.push({parallel: false/*number==previousNumber*/, intention: intentionInstance});
             }
             
             return;
@@ -97,19 +97,24 @@ function blackboxIntentionGenerator (intentions = []) {
             pddlProblem.addGoal(...this.goal.parameters.goal)
             var problemFile = yield pddlProblem.saveToFile()
 
-            yield this.blackboxExec(domainFile, problemFile)
+            yield this.doPlan(pddlDomain, pddlProblem)
 
             var previousStepGoals = []
 
             for (const step of this.plan) {
-                if(step.parallel) {
-                    previousStepGoals.push( step.intention.run().catch( err => err ) )
+                if (step.parallel) {
+                    this.log('Starting concurrent step ' + step.intention.toString())
                 }
                 else {
                     yield Promise.all(previousStepGoals)
-                    previousStepGoals = [ step.intention.run().catch( err => err ) ]
+                    previousStepGoals = []
+                    this.log('Starting sequential step ' + step.intention.toString())
                 }
-                this.log(step.intention.toString())
+                previousStepGoals.push(
+                    step.intention.run().catch( err => {
+                        throw err//new Error('Step failed');
+                    } )
+                )
             }
 
             // wait for last steps to complete before finish blackbox plan execution intention
@@ -120,10 +125,10 @@ function blackboxIntentionGenerator (intentions = []) {
     } // end of class Blackbox extends Intention
 
     for ( let intentionClass of intentions ) {
-        Blackbox.addAction(intentionClass)
+        OnlinePlanning.addAction(intentionClass)
     }
 
-    return Blackbox;
+    return {OnlinePlanning};
 }
 
 
@@ -137,4 +142,4 @@ function blackboxIntentionGenerator (intentions = []) {
 
 
 
-module.exports = blackboxIntentionGenerator
+module.exports = setup

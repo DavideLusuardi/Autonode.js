@@ -54,7 +54,7 @@ class Move extends pddlActionIntention {
 class TurnLightOn extends pddlActionIntention {
 
     *exec () {
-        this.agent.agents.house_agent.perform... // perform turn on light from another agent 
+        // this.agent.agents.house_agent.perform... // perform turn on light from another agent TODO
         for ( let b of this.effect )
             this.agent.beliefs.apply(b)
         yield new Promise(res=>setTimeout(res,100))
