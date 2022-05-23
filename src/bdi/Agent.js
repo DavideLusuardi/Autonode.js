@@ -2,7 +2,7 @@ const Beliefset =  require('./Beliefset')
 const Intention = require('./Intention');
 const chalk = require('chalk');
 
-var nextId = 0
+var nextId = 2
 const colors = ['red', 'blue', 'green', 'yellow', 'magenta', 'cyan', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright']
 
 /**
@@ -68,8 +68,12 @@ class Agent {
 
 
     // TODO
-    perform(){
-
+    perform(action, args){
+        if(action in this.actions){
+            this.actions[actions](args)
+            return true
+        }
+        return false
     }
 
 
