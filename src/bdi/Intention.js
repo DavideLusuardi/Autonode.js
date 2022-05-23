@@ -62,7 +62,7 @@ class Intention {
      * @returns {Boolean}   true if success, otherwise false
      */
     async run () {
-        this.log('Intention started');
+        // this.log('Intention started');
 
         var iterator = this.exec(this.goal.parameters)
         var awaitedYield = null
@@ -99,7 +99,7 @@ class Intention {
             // await keypress()
         }
 
-        this.log('Intention success')
+        // this.log('Intention success')
         return true;
 
     }

@@ -47,6 +47,7 @@ class SensingIntention extends Intention {
             this.agent.beliefs.declare('connected '+pair)
         
         this.agent.beliefs.declare(`at ${this.agent.devices.lawn_mower.at}`)
+        var promises = []
         let promise = new Promise( async res => {
             while (true) {
                 await this.agent.devices.lawn_mower.notifyChange('at')
@@ -58,8 +59,6 @@ class SensingIntention extends Intention {
         });
         promises.push(promise)
 
-
-        var promises = []
         for (let [area, height] of Object.entries(this.garden.grass_height)){
             this.agent.beliefs.declare(`tall-grass ${area}`, height=='tall')
 

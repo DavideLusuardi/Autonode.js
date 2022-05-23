@@ -5,17 +5,18 @@ const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 
 class VacuumCleanerDevice extends Observable {
-    constructor(name, room){
-        let init = {name: name, at: room}
+    constructor(name, room, rooms){
+        let init = {name: name, at: room.name}
         super(init)
+        this.rooms = rooms
     }
 
-    // TODO
-    suck(){
+    suck(room_name){
+        this.rooms[room_name].clean()
     }
 
-    // TODO
-    move(){    
+    move(room_name){
+        this.at = room_name    
     }
 }
 
@@ -50,21 +51,21 @@ class SensingIntention extends Intention {
             this.agent.beliefs.declare(`dirty ${room.name}`, room.dirt)
             let promise = new Promise( async res => {
                 while (true) {
-                    await room.notifyChange('dirt')
+                    let dirt = await room.notifyChange('dirt')
                     this.agent.beliefs.declare(`dirty ${room.name}`, room.dirt)
                 }
             });
             promises.push(promise)
         }
         
-        this.agent.beliefs.declare(`at ${this.agent.devices.vacuum_cleaner.at.name}`)
+        this.agent.beliefs.declare(`at ${this.agent.devices.vacuum_cleaner.at}`)
         let promise = new Promise( async res => {
             while (true) {
                 await this.agent.devices.vacuum_cleaner.notifyChange('at')
                 for(let literal of this.agent.beliefs.matchingLiterals(`at *`)){
                     this.agent.beliefs.undeclare(literal)
                 }
-                this.agent.beliefs.declare(`at ${this.agent.devices.vacuum_cleaner.at.name}`)
+                this.agent.beliefs.declare(`at ${this.agent.devices.vacuum_cleaner.at}`)
             }
         });
         promises.push(promise)
@@ -98,13 +99,9 @@ class SensingIntention extends Intention {
 
 class Suck extends pddlActionIntention {
 
-    *exec () {
-        this.agent.devices.vacuum_cleaner.suck()
-        for ( let b of this.effect ){
-            this.agent.beliefs.apply(b)
-        }
+    *exec ({r}=parameters) {
+        this.agent.devices.vacuum_cleaner.suck(r)
         yield new Promise(res=>setTimeout(res,100))
-        this.log('effects applied')
     }
 
     static parameters = ['r']
@@ -116,12 +113,9 @@ class Suck extends pddlActionIntention {
 
 class Move extends pddlActionIntention {
 
-    *exec () {
-        this.agent.devices.vacuum_cleaner.move()
-        for ( let b of this.effect )
-            this.agent.beliefs.apply(b)
+    *exec ({r1, r2}=parameters) {
+        this.agent.devices.vacuum_cleaner.move(r2)
         yield new Promise(res=>setTimeout(res,100))
-        this.log('effects applied')
     }
 
     static parameters = ['r1', 'r2']
