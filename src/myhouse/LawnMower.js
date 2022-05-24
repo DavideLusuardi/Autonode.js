@@ -64,7 +64,7 @@ class SensingIntention extends Intention {
 
             let promise = new Promise( async res => {
                 while (true) {
-                    let height = await this.garden.grass_height.notifyChange(area)                    
+                    let height = await this.garden.grass_height.notifyChange(area)
                     this.agent.beliefs.declare(`tall-grass ${area}`, height=='tall')
                 }
             });
@@ -109,9 +109,13 @@ class SensingIntention extends Intention {
 
 class Cut extends pddlActionIntention {
 
-    *exec ({area}=parameters) {
-        this.agent.devices.lawn_mower.cut(area)        
-        yield new Promise(res=>setTimeout(res,100))
+    *exec ({a}=parameters) {
+        if ( this.checkPrecondition() ) {
+            this.agent.devices.lawn_mower.cut(a)        
+            yield new Promise(res=>setTimeout(res,100))
+        }
+        else
+            throw new Error('pddl precondition not valid'); //Promise is rejected!
     }
 
     static parameters = ['a']

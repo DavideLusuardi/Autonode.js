@@ -17,6 +17,7 @@
 class Observable {
     #values;
     #observers;
+    #genericObservers;
     #id=0;
 
     /**
@@ -26,7 +27,7 @@ class Observable {
     constructor (init={}) {
         this.#values = {}
         this.#observers = {}
-        this.genericObservers = []
+        this.#genericObservers = []
         for (let [key,value] of Object.entries(init)) {
             this.set (key, value);
         }
@@ -49,7 +50,7 @@ class Observable {
                 set: (v) => {
                     this.#values[key] = v;
                     Promise.resolve().then( () => {
-                        for (let obs of this.genericObservers)
+                        for (let obs of this.#genericObservers)
                             obs(v, key, this);
                         for (let obs of Object.values(this.#observers[key]))
                             obs(v, key, this);
@@ -88,7 +89,7 @@ class Observable {
      * @param {observer} observer function(value, key, observable)
      */
     observeAny (observer) {
-        this.genericObservers.push( observer )
+        this.#genericObservers.push( observer )
     }
     
     /**
