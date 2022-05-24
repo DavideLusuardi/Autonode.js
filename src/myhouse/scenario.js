@@ -107,8 +107,10 @@ class House {
         this.devices['garage_door'] = new GarageDoorDevice('garage_door', this.rooms.garage)
         this.devices['solar_panels'] = new SolarPanelDevice('solar_panels', this.utilities.electricity)
 
-        this.devices['lawn_mower'] = new LawnMower.LawnMowerDevice('lawn_mower', this.rooms.garden, 'a11')
-        this.devices['vacuum_cleaner'] = new VacuumCleaner.VacuumCleanerDevice('vacuum_cleaner', this.rooms.livingroom, this.rooms)
+        this.devices['lawn_mower1'] = new LawnMower.LawnMowerDevice('lawn_mower1', this.rooms.garden, 'a11')
+        this.devices['lawn_mower2'] = new LawnMower.LawnMowerDevice('lawn_mower2', this.rooms.garden, 'a45')
+        this.devices['vacuum_cleaner1'] = new VacuumCleaner.VacuumCleanerDevice('vacuum_cleaner1', this.rooms.livingroom, this.rooms)
+        this.devices['vacuum_cleaner2'] = new VacuumCleaner.VacuumCleanerDevice('vacuum_cleaner2', this.rooms.secondarybathroom, this.rooms)
     }
 
 }
@@ -163,65 +165,83 @@ agents.house_agent = new Agent('house_agent')
 
 
 class RetryGoal extends Goal {}
-class RetryFourTimesIntention extends Intention {
+class RetryIntention extends Intention {
     static applicable (goal) {
         return goal instanceof RetryGoal
     }
     *exec ({goal}=parameters) {
-        for(let i=0; i<4; i++) {
+        for(let i=0; i<10; i++) {
             let goalAchieved = yield this.agent.postSubGoal( goal )
             if (goalAchieved)
                 return;
-            this.log('wait for something to change on beliefset before retrying for the ' + (i+2) + 'th time goal', goal.toString())
-            yield this.agent.beliefs.notifyAnyChange()
+            this.log('wait for something to change on beliefset or timeout before retrying for the ' + (i+2) + 'th time goal', goal.toString())
+            // yield this.agent.beliefs.notifyAnyChange()
+            yield new Promise( res => {
+                this.agent.beliefs.observeAny((value, key, observer) => {res(value)})
+                // Clock.global.observe('hh', (hh, key) => {res(hh)})
+                setTimeout(()=>{res()}, 1000)
+            })
         }
     }
 }
 
-// ------------------------lawn mower agent--------------------------------------------------------------------
-{
-    agents.lawn_mower = new Agent('lawn_mower', agents, house.devices)
-
-    agents.lawn_mower.intentions.push(LawnMower.SensingIntention)
-    agents.lawn_mower.postSubGoal(new LawnMower.SensingGoal(house.rooms.garden, house.people, house.utilities.weather))
-
-    let {PlanningIntention} = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
-    agents.lawn_mower.intentions.push(PlanningIntention)
-    agents.lawn_mower.intentions.push(RetryFourTimesIntention)
-
-    let lawn_mower_goal = house.rooms.garden.grass_areas.map(a => { return `not (tall-grass ${a})`} )
-    // agents.lawn_mower.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
-    agents.lawn_mower.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: lawn_mower_goal } ) } ) )
-}
-
-{
-    agents.lawn_mower_pro = new Agent('lawn_mower_pro', agents, house.devices)
-
-    agents.lawn_mower_pro.intentions.push(LawnMower.SensingIntention)
-    agents.lawn_mower_pro.postSubGoal(new LawnMower.SensingGoal(house.rooms.garden, house.people, house.utilities.weather))
-
-    let {PlanningIntention} = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
-    agents.lawn_mower_pro.intentions.push(PlanningIntention)
-    agents.lawn_mower_pro.intentions.push(RetryFourTimesIntention)
-
-    let lawn_mower_goal = house.rooms.garden.grass_areas.map(a => { return `not (tall-grass ${a})`} )
-    // agents.lawn_mower_pro.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
-    agents.lawn_mower_pro.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: lawn_mower_goal } ) } ) )
-}
-
-// ------------------------vacuum cleaner agent--------------------------------------------------------------------
+// ------------------------lawn mower agents--------------------------------------------------------------------
 // {
-//     agents.vacuum_cleaner = new Agent('vacuum_cleaner', agents, house.devices)
+//     agents.lawn_mower1 = new Agent('lawn_mower1', agents, {lawn_mower: house.devices.lawn_mower1})
+
+//     agents.lawn_mower1.intentions.push(LawnMower.SensingIntention)
+//     agents.lawn_mower1.postSubGoal(new LawnMower.SensingGoal(house.rooms.garden, house.people, house.utilities.weather))
+
+//     let {PlanningIntention} = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
+//     agents.lawn_mower1.intentions.push(PlanningIntention)
+//     agents.lawn_mower1.intentions.push(RetryIntention)
+
+//     let lawn_mower_goal = house.rooms.garden.grass_areas.map(a => { return `not (tall-grass ${a})`} )
+//     // agents.lawn_mower1.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
+//     agents.lawn_mower1.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: lawn_mower_goal } ) } ) )
+// }
+
+// {
+//     agents.lawn_mower2 = new Agent('lawn_mower2', agents, {lawn_mower: house.devices.lawn_mower2})
+
+//     agents.lawn_mower2.intentions.push(LawnMower.SensingIntention)
+//     agents.lawn_mower2.postSubGoal(new LawnMower.SensingGoal(house.rooms.garden, house.people, house.utilities.weather))
+
+//     let {PlanningIntention} = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
+//     agents.lawn_mower2.intentions.push(PlanningIntention)
+//     agents.lawn_mower2.intentions.push(RetryIntention)
+
+//     let lawn_mower_goal = house.rooms.garden.grass_areas.map(a => { return `not (tall-grass ${a})`} )
+//     // agents.lawn_mower2.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
+//     agents.lawn_mower2.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: lawn_mower_goal } ) } ) )
+// }
+
+// ------------------------vacuum cleaner agents--------------------------------------------------------------------
+// {
+//     agents.vacuum_cleaner1 = new Agent('vacuum_cleaner1', agents, {vacuum_cleaner: house.devices.vacuum_cleaner1})
 //     let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
     
-//     agents.vacuum_cleaner.intentions.push(VacuumCleaner.SensingIntention)
-//     agents.vacuum_cleaner.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
+//     agents.vacuum_cleaner1.intentions.push(VacuumCleaner.SensingIntention)
+//     agents.vacuum_cleaner1.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
     
 //     let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
-//     agents.vacuum_cleaner.intentions.push(PlanningIntention)
-//     let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner.at}`])
-//     agents.vacuum_cleaner.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
+//     agents.vacuum_cleaner1.intentions.push(PlanningIntention)
+//     let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
+//     agents.vacuum_cleaner1.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
 // }
+// {
+//     agents.vacuum_cleaner2 = new Agent('vacuum_cleaner2', agents, {vacuum_cleaner: house.devices.vacuum_cleaner2})
+//     let rooms = [house.rooms.bedroom1, house.rooms.bedroom2, house.rooms.bedroom3, house.rooms.secondarybathroom, house.rooms.corridor]
+    
+//     agents.vacuum_cleaner2.intentions.push(VacuumCleaner.SensingIntention)
+//     agents.vacuum_cleaner2.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
+    
+//     let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
+//     agents.vacuum_cleaner2.intentions.push(PlanningIntention)
+//     let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner2.at}`])
+//     agents.vacuum_cleaner2.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
+// }
+
 
 
 

@@ -128,8 +128,12 @@ class Cut extends pddlActionIntention {
 class Move extends pddlActionIntention {
 
     *exec ({a1, a2}=parameters) {
-        this.agent.devices.lawn_mower.move(a2)
-        yield new Promise(res=>setTimeout(res,100))
+        if ( this.checkPrecondition() ) {
+            this.agent.devices.lawn_mower.move(a2)
+            yield new Promise(res=>setTimeout(res,100))
+        }
+        else
+            throw new Error('pddl precondition not valid'); //Promise is rejected!
     }
 
     static parameters = ['a1', 'a2']
