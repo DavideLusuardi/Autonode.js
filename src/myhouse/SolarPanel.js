@@ -12,13 +12,14 @@ class SolarPanelDevice extends Observable {
         this.electricity_utility = electricity_utility
         this.consumption_callback = () => {
             let consumption = -this.production/(60/Clock.getIncrement().mm) // calculate consumption every clock increment
-            this.electricity_utility.consumption += consumption
+            this.electricity_utility.total_consumption += consumption
         }
     }
 
     activate(){
         if(this.status == 'inactive'){
             this.status = 'active'
+            this.electricity_utility.current_consumption -= this.production
             Clock.global.observe('mm', this.consumption_callback)
         }
     }
@@ -26,6 +27,7 @@ class SolarPanelDevice extends Observable {
     deactivate(){
         if(this.status == 'active'){
             this.status = 'inactive'
+            this.electricity_utility.current_consumption += this.production
             Clock.global.unobserve('mm', this.consumption_callback)
         }
     }

@@ -25,8 +25,8 @@ class House {
     constructor () {
 
         this.utilities = {
-            electricity: new Observable( { consumption: 0 } ),
-            weather: new Observable( {is_raining: false} )
+            electricity: new Observable( { total_consumption: 0, current_consumption: 0 } ),
+            weather: new Observable( {is_raining: false, sun_present: true} ),
         }
 
         // rooms -------------------------------------------------------
@@ -75,7 +75,7 @@ class House {
         // TODO: aggiungere altre persone
         // people -------------------------------------------------------
         this.people = {
-            // luca: new Person(this, 'luca', this.rooms.mainbathroom.name),
+            luca: new Person(this, 'luca', this.rooms.mainbathroom.name),
         }
 
         // devices -------------------------------------------------------
@@ -116,54 +116,7 @@ class House {
 
 }
 
-
-// class HouseAgent extends Agent {
-//     constructor (name, agents={}, devices={}) {
-//         super(name, agents, devices)
-
-//         this.actions = {}
-//     }
-
-//     turnOnLight(light_name){
-//         for(let [d_name, d] of Object.entries(devices)){
-//             if(d.name == light_name){
-//                 this.intentions.push(TODO)
-//             }
-//         }
-//     }
-// }
-
-
-var house = new House()
-let agents = []
-
-// ------------------------house agent--------------------------------------------------------------------
-agents.house_agent = new Agent('house_agent')
-
-// agents.house_agent.intentions.push(PersonDetectionIntention)
-// agents.house_agent.postSubGoal(new PersonDetectionGoal(house.people))
-
-// agents.house_agent.intentions.push(BrightnessSensingIntention)
-// agents.house_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
-
-// agents.house_agent.intentions.push(LightControlIntention)
-// agents.house_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people))
-
-// agents.house_agent.intentions.push(TelevisionControlIntention)
-// agents.house_agent.postSubGoal(new TelevisionControlGoal(house.devices.television, house.people, house.devices.lights_TV))
-
-// agents.house_agent.intentions.push(ShutterControlIntention)
-// agents.house_agent.postSubGoal(new ShutterControlGoal(house.shutters))
-
-// agents.house_agent.intentions.push(GarageDoorControlIntention)
-// agents.house_agent.postSubGoal(new GarageDoorControlGoal([house.devices.garage_door]))
-
-// agents.house_agent.intentions.push(SolarPanelMonitorIntention)
-// agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(house.devices.solar_panels))
-
-// agents.house_agent.intentions.push(EnergyMonitorIntention)
-// agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity))
-
+let world = 
 
 class RetryGoal extends Goal {}
 class RetryIntention extends Intention {
@@ -185,6 +138,48 @@ class RetryIntention extends Intention {
         }
     }
 }
+
+var house = new House()
+let agents = []
+
+// ------------------------house agent--------------------------------------------------------------------
+// agents.house_agent = new Agent('house_agent')
+
+// agents.house_agent.intentions.push(PersonDetectionIntention)
+// agents.house_agent.postSubGoal(new PersonDetectionGoal(house.people))
+
+// agents.house_agent.intentions.push(TelevisionControlIntention)
+// agents.house_agent.postSubGoal(new TelevisionControlGoal(house.devices.television, house.people, house.devices.lights_TV))
+
+// agents.house_agent.intentions.push(GarageDoorControlIntention)
+// agents.house_agent.postSubGoal(new GarageDoorControlGoal([house.devices.garage_door]))
+
+// agents.house_agent.intentions.push(SolarPanelMonitorIntention)
+// agents.house_agent.postSubGoal(new SolarPanelMonitorGoal(house.devices.solar_panels))
+
+// agents.house_agent.intentions.push(EnergyMonitorIntention)
+// agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity))
+
+// ------------------------light agent--------------------------------------------------------------------
+// agents.light_agent = new Agent('light_agent')
+
+// agents.light_agent.intentions.push(PersonDetectionIntention)
+// agents.light_agent.postSubGoal(new PersonDetectionGoal(house.people))
+
+// agents.light_agent.intentions.push(BrightnessSensingIntention)
+// agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
+
+// agents.light_agent.intentions.push(LightControlIntention)
+// agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people))
+
+
+// ------------------------shutter agent--------------------------------------------------------------------
+agents.shutter_agent = new Agent('shutter_agent')
+
+agents.shutter_agent.intentions.push(ShutterControlIntention)
+agents.shutter_agent.postSubGoal(new ShutterControlGoal(house.shutters))
+
+
 
 // ------------------------lawn mower agents--------------------------------------------------------------------
 // {
@@ -218,23 +213,23 @@ class RetryIntention extends Intention {
 // }
 
 // ------------------------vacuum cleaner agents--------------------------------------------------------------------
-{
-    agents.vacuum_cleaner1 = new Agent('vacuum_cleaner1', agents, {vacuum_cleaner: house.devices.vacuum_cleaner1})
-    let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
+// {
+//     agents.vacuum_cleaner1 = new Agent('vacuum_cleaner1', agents, {vacuum_cleaner: house.devices.vacuum_cleaner1})
+//     let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
     
-    agents.vacuum_cleaner1.intentions.push(VacuumCleaner.SensingIntention)
-    agents.vacuum_cleaner1.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
+//     agents.vacuum_cleaner1.intentions.push(VacuumCleaner.SensingIntention)
+//     agents.vacuum_cleaner1.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
 
-    agents.vacuum_cleaner1.intentions.push(VacuumCleaner.Move, VacuumCleaner.Suck)
-    agents.vacuum_cleaner1.intentions.push(MessageDispatcher.PostmanAcceptAllRequest)
+//     agents.vacuum_cleaner1.intentions.push(VacuumCleaner.Move, VacuumCleaner.Suck)
+//     agents.vacuum_cleaner1.intentions.push(MessageDispatcher.PostmanAcceptAllRequest)
 
-    let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
-    agents.vacuum_cleaner1.intentions.push(PlanningIntention)
-    // let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
-    // agents.vacuum_cleaner1.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
+//     let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
+//     agents.vacuum_cleaner1.intentions.push(PlanningIntention)
+//     // let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
+//     // agents.vacuum_cleaner1.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
     
-    agents.vacuum_cleaner1.postSubGoal( new MessageDispatcher.Postman() )
-}
+//     agents.vacuum_cleaner1.postSubGoal( new MessageDispatcher.Postman() )
+// }
 // {
 //     agents.vacuum_cleaner2 = new Agent('vacuum_cleaner2', agents, {vacuum_cleaner: house.devices.vacuum_cleaner2})
 //     let rooms = [house.rooms.bedroom1, house.rooms.bedroom2, house.rooms.bedroom3, house.rooms.secondarybathroom, house.rooms.corridor]
@@ -255,14 +250,14 @@ class RetryIntention extends Intention {
 // Daily schedule
 Clock.global.observe('mm', (mm, key) => {
     var time = Clock.global
-    // if(time.hh==7 && time.mm==0)
-    //     house.people.luca.moveTo(house.rooms.livingroom.name)
-    // if(time.hh==8 && time.mm==30)
-    //     house.people.luca.moveTo(house.rooms.kitchen.name)
-    // if(time.hh==20 && time.mm==0)
-    //     house.people.luca.moveTo(house.rooms.livingroom.name)
-    // if(time.hh==23 && time.mm==0)
-    //     house.people.luca.moveTo(house.rooms.mainbathroom.name)
+    if(time.hh==7 && time.mm==0)
+        house.people.luca.moveTo(house.rooms.livingroom.name)
+    if(time.hh==8 && time.mm==30)
+        house.people.luca.moveTo(house.rooms.kitchen.name)
+    if(time.hh==20 && time.mm==0)
+        house.people.luca.moveTo(house.rooms.livingroom.name)
+    if(time.hh==22 && time.mm==30)
+        house.people.luca.moveTo(house.rooms.mainbathroom.name)
 
     if(time.hh==8 && time.mm==0)
         house.devices.solar_panels.activate()
@@ -270,11 +265,11 @@ Clock.global.observe('mm', (mm, key) => {
         house.devices.solar_panels.deactivate()
 
 
-    if(time.dd == 1 && time.hh==0 && time.mm==0){ // TODO
-        let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
-        let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
-        MessageDispatcher.MessageDispatcher.authenticate(agents.house_agent).sendTo( agents.vacuum_cleaner1.name, new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
-    }
+    // if(time.dd == 1 && time.hh==0 && time.mm==0){ // TODO
+    //     let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
+    //     let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
+    //     MessageDispatcher.MessageDispatcher.authenticate(agents.house_agent).sendTo( agents.vacuum_cleaner1.name, new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
+    // }
 })
 
 Clock.startTimer()

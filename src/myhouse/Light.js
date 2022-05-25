@@ -12,19 +12,21 @@ class LightDevice extends Observable {
         this.electricity_utility = electricity_utility
         this.consumption_callback = () => {
             let consumption = this.consumption/(60/Clock.getIncrement().mm) // calculate consumption every clock increment
-            this.electricity_utility.consumption += consumption
+            this.electricity_utility.total_consumption += consumption
         }
     }
 
     turnOn(){
         if(this.status == 'off'){
-            this.status = 'on'            
+            this.status = 'on'
+            this.electricity_utility.current_consumption += this.consumption
             Clock.global.observe('mm', this.consumption_callback)
         }
     }
     turnOff(){
         if(this.status == 'on'){
             this.status = 'off'
+            this.electricity_utility.current_consumption -= this.consumption
             Clock.global.unobserve('mm', this.consumption_callback)
         }
     }

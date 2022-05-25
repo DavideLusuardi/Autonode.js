@@ -12,7 +12,7 @@ class TelevisionDevice extends Observable {
         this.electricity_utility = electricity_utility
         this.consumption_callback = () => {
             let consumption = this.consumption/(60/Clock.getIncrement().mm) // calculate consumption every clock increment
-            this.electricity_utility.consumption += consumption
+            this.electricity_utility.total_consumption += consumption
         }
     }
 
@@ -21,6 +21,7 @@ class TelevisionDevice extends Observable {
             this.status = 'on'
             if(channel)
                 this.channel = channel
+            this.electricity_utility.current_consumption += this.consumption
             Clock.global.observe('mm', this.consumption_callback)
             return this.channel
         }
@@ -28,6 +29,7 @@ class TelevisionDevice extends Observable {
     turnOff(){
         if(this.status == 'on'){
             this.status = 'off'
+            this.electricity_utility.current_consumption -= this.consumption
             Clock.global.unobserve('mm', this.consumption_callback)
         }
     }
