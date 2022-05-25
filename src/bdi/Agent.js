@@ -48,35 +48,6 @@ class Agent {
         this.headerLog(this.name, ...args)
     }
 
-
-    /**
-     * 
-     * @param {...String} literals Iterable of literals; intended as a conjunction of literals 
-     * @returns {boolean} true if verified, otherwise false
-     */
-    ask_if(...literals){ // TODO
-        return this.beliefs.check(literals)
-    }
-
-    /**
-     * 
-     * @param {...String} literals Iterable of literals; intended as a conjunction of literals 
-     */
-    tell(...literals){ // TODO
-        this.beliefs.apply(literals)
-    }
-
-
-    // TODO
-    perform(action, args){
-        if(action in this.actions){
-            this.actions[actions](args)
-            return true
-        }
-        return false
-    }
-
-
     async postSubGoal (subGoal) {
         
         // if (!this.beliefs.check(subGoal.precondition)) { //!subGoal.checkPrecondition()
@@ -102,6 +73,7 @@ class Agent {
     
             if ( success ) {
                 this.log('Succesfully used intention', intentionClass.name, 'to achieve goal', subGoal.toString())
+                subGoal.achieved = true;
                 return Promise.resolve(true) // same as: return true;
             }
             else {

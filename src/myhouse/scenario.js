@@ -5,6 +5,7 @@ const Intention = require('../bdi/Intention')
 const Observable =  require('../utils/Observable')
 const Clock =  require('../utils/Clock')
 const PlanningGoal = require('../pddl/PlanningGoal')
+const MessageDispatcher = require('../utils/MessageDispatcher')
 
 const Room = require('./Room')
 const Garden = require('./Garden')
@@ -217,18 +218,23 @@ class RetryIntention extends Intention {
 // }
 
 // ------------------------vacuum cleaner agents--------------------------------------------------------------------
-// {
-//     agents.vacuum_cleaner1 = new Agent('vacuum_cleaner1', agents, {vacuum_cleaner: house.devices.vacuum_cleaner1})
-//     let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
+{
+    agents.vacuum_cleaner1 = new Agent('vacuum_cleaner1', agents, {vacuum_cleaner: house.devices.vacuum_cleaner1})
+    let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
     
-//     agents.vacuum_cleaner1.intentions.push(VacuumCleaner.SensingIntention)
-//     agents.vacuum_cleaner1.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
+    agents.vacuum_cleaner1.intentions.push(VacuumCleaner.SensingIntention)
+    agents.vacuum_cleaner1.postSubGoal(new VacuumCleaner.SensingGoal(rooms, house.people))
+
+    agents.vacuum_cleaner1.intentions.push(VacuumCleaner.Move, VacuumCleaner.Suck)
+    agents.vacuum_cleaner1.intentions.push(MessageDispatcher.PostmanAcceptAllRequest)
+
+    let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
+    agents.vacuum_cleaner1.intentions.push(PlanningIntention)
+    // let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
+    // agents.vacuum_cleaner1.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
     
-//     let {PlanningIntention} = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
-//     agents.vacuum_cleaner1.intentions.push(PlanningIntention)
-//     let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
-//     agents.vacuum_cleaner1.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
-// }
+    agents.vacuum_cleaner1.postSubGoal( new MessageDispatcher.Postman() )
+}
 // {
 //     agents.vacuum_cleaner2 = new Agent('vacuum_cleaner2', agents, {vacuum_cleaner: house.devices.vacuum_cleaner2})
 //     let rooms = [house.rooms.bedroom1, house.rooms.bedroom2, house.rooms.bedroom3, house.rooms.secondarybathroom, house.rooms.corridor]
@@ -262,16 +268,17 @@ Clock.global.observe('mm', (mm, key) => {
         house.devices.solar_panels.activate()
     if(time.hh==18 && time.mm==0)
         house.devices.solar_panels.deactivate()
+
+
+    if(time.dd == 1 && time.hh==0 && time.mm==0){ // TODO
+        let rooms = [house.rooms.livingroom, house.rooms.kitchen, house.rooms.mainbathroom, house.rooms.garage]
+        let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
+        MessageDispatcher.MessageDispatcher.authenticate(agents.house_agent).sendTo( agents.vacuum_cleaner1.name, new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
+    }
 })
 
 Clock.startTimer()
 
 
 
-// TODO: pddlActionIntention get arguments of action
-// TODO: implement perform of agent
 // TODO: implement many intention for the same goal
-
-// more agents with same goal but different intentions
-// sensors as observable or intentions
-// washing machine behaves different accorgingly to initial setting and status

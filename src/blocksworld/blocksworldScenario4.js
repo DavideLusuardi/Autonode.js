@@ -72,8 +72,9 @@ const world = new Agent('world');
         static effect = [ ['holding', 'x', 'gripper'], ['not empty', 'gripper'], ['not clear', 'x'], ['clear', 'y'], ['not on', 'x', 'y'] ]
     }
 
-    world.pickUp = function ({ob, gripper} = args) {
+    world.pickUp = async function ({ob, gripper} = args) {
         this.log('pickUp', ob, gripper)
+        // await new Promise( res => setTimeout(res, 5000) )
         return new PickUp(world, {ob, gripper} ).checkPreconditionAndApplyEffect()
         .catch(err=>{this.error('world.pickUp failed:', err.message || err); throw err;})
     }
@@ -90,8 +91,10 @@ const world = new Agent('world');
         .catch(err=>{this.error('world.stack failed:', err.message || err); throw err;})
     }
 
-    world.unStack = function ({x, y, gripper} = args) {
+    world.unStack = async function ({x, y, gripper} = args) {
         this.log('unStack', x, y, gripper)
+        new UnStack(world, {x, y, gripper} ).checkPrecondition()
+        // await new Promise( res => setTimeout(res, 5000) )
         return new UnStack(world, {x, y, gripper} ).checkPreconditionAndApplyEffect()
         .catch(err=>{this.error('world.unStack failed:', err.message || err); throw err;})
     }
@@ -220,8 +223,10 @@ class PostmanAcceptAllRequest extends Intention {
         *exec ({x,y,gripper}=parameters) {
             if (gripper==this.agent.name)
                 yield world.unStack({x,y,gripper})
-            else
-                yield MessageDispatcher.authenticate(this.agent).sendTo( gripper, new UnStackGoal({x,y,gripper}) )
+            else {
+                let request = yield new UnStackGoal({x,y,gripper})
+                yield MessageDispatcher.authenticate(this.agent).sendTo( gripper, request )
+            }
         }
     }
 
@@ -252,22 +257,23 @@ class PostmanAcceptAllRequest extends Intention {
         world.beliefs.observeAny( sensor(a1) )
         a1.intentions.push(PickUp, PutDown, Stack, UnStack)
         a1.intentions.push(OnlinePlanning)
-        a1.intentions.push(RetryFourTimesIntention)
+        // a1.intentions.push(RetryFourTimesIntention)
         a1.intentions.push(PostmanAcceptAllRequest)
 
         // console.log('a1 entries', a1.beliefs.entries)
         // console.log('a1 literals', a1.beliefs.literals)
 
         // a1.postSubGoal( new PlanningGoal( { goal: ['holding a'] } ) ) // by default give up after trying all intention to achieve the goal
-        a1.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: ['holding a a1'] } ) } ) ) // try to achieve the PlanningGoal for 4 times
+        // a1.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: ['holding a a1'] } ) } ) ) // try to achieve the PlanningGoal for 4 times
+        a1.postSubGoal( new PlanningGoal( { goal: ['holding a a1'] } ) )
         a1.postSubGoal( new Postman() )
     }
     {
         let a2 = new Agent('a2')
         world.beliefs.observeAny( sensor(a2) )
         a2.intentions.push(PickUp, PutDown, Stack, UnStack)
-        a2.intentions.push(OnlinePlanning)
-        a2.intentions.push(RetryFourTimesIntention)
+        // a2.intentions.push(OnlinePlanning)
+        // a2.intentions.push(RetryFourTimesIntention)
         a2.intentions.push(PostmanAcceptAllRequest)
 
         // console.log('a2 entries', a2.beliefs.entries)

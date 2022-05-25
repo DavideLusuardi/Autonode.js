@@ -96,8 +96,12 @@ class SensingIntention extends Intention {
     }
 }
 
-
+class SuckGoal extends Goal {}
 class Suck extends pddlActionIntention {
+
+    static applicable (goal) {
+        return goal instanceof SuckGoal
+    }
 
     *exec ({r}=parameters) {
         this.agent.devices.vacuum_cleaner.suck(r)
@@ -110,8 +114,12 @@ class Suck extends pddlActionIntention {
 
 }
 
-
+class MoveGoal extends Goal {}
 class Move extends pddlActionIntention {
+
+    static applicable (goal) {
+        return goal instanceof MoveGoal
+    }
 
     *exec ({r1, r2}=parameters) {
         this.agent.devices.vacuum_cleaner.move(r2)
@@ -141,4 +149,4 @@ class Move extends pddlActionIntention {
 
 // }
 
-module.exports = {VacuumCleanerDevice, SensingGoal, SensingIntention, Suck, Move}
+module.exports = {VacuumCleanerDevice, SensingGoal, SensingIntention, SuckGoal, Suck, MoveGoal, Move}
