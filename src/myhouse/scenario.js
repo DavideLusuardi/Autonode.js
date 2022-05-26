@@ -161,23 +161,23 @@ let agents = []
 // agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity))
 
 // ------------------------light agent--------------------------------------------------------------------
-// agents.light_agent = new Agent('light_agent')
+agents.light_agent = new Agent('light_agent')
 
-// agents.light_agent.intentions.push(PersonDetectionIntention)
-// agents.light_agent.postSubGoal(new PersonDetectionGoal(house.people))
+agents.light_agent.intentions.push(PersonDetectionIntention)
+agents.light_agent.postSubGoal(new PersonDetectionGoal(house.people))
 
-// agents.light_agent.intentions.push(BrightnessSensingIntention)
-// agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
+agents.light_agent.intentions.push(BrightnessSensingIntention)
+agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
 
-// agents.light_agent.intentions.push(LightControlIntention)
-// agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people))
+agents.light_agent.intentions.push(LightControlIntention)
+agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people, house.rooms.garden))
 
 
 // ------------------------shutter agent--------------------------------------------------------------------
-agents.shutter_agent = new Agent('shutter_agent')
+// agents.shutter_agent = new Agent('shutter_agent')
 
-agents.shutter_agent.intentions.push(ShutterControlIntention)
-agents.shutter_agent.postSubGoal(new ShutterControlGoal(house.shutters))
+// agents.shutter_agent.intentions.push(ShutterControlIntention)
+// agents.shutter_agent.postSubGoal(new ShutterControlGoal(house.shutters))
 
 
 
