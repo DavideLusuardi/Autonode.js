@@ -15,6 +15,7 @@ const {LightDevice, LightControlGoal, LightControlIntention} = require('./Light'
 const {TelevisionDevice, TelevisionControlGoal, TelevisionControlIntention} = require('./Television')
 const {ShutterDevice, ShutterControlGoal, ShutterControlIntention} = require('./Shutter')
 const {GarageDoorDevice, GarageDoorControlGoal, GarageDoorControlIntention} = require('./GarageDoor')
+const Irrigation = require('./Irrigation')
 const {SolarPanelDevice, SolarPanelMonitorGoal, SolarPanelMonitorIntention} = require('./SolarPanel')
 const {EnergyMonitorGoal, EnergyMonitorIntention} = require('./ResourceMonitor')
 const LawnMower = require('./LawnMower')
@@ -26,7 +27,7 @@ class House {
 
         this.utilities = {
             electricity: new Observable( { total_consumption: 0, current_consumption: 0 } ),
-            weather: new Observable( {is_raining: false, sun_present: true} ),
+            weather: new Observable( {is_raining: false, sun_present: true, last_day_has_rained: -2, raining_next24h: false} ),
         }
 
         // rooms -------------------------------------------------------
@@ -85,12 +86,11 @@ class House {
         for (let [key, room] of Object.entries(this.rooms)) {
             this.lights['light_'+room.name] = new LightDevice('light_'+room.name, room, 10, this.utilities.electricity)
         }
-        this.devices['lights_TV'] = new LightDevice('lights_TV', this.rooms.livingroom, 10, this.utilities.electricity)
         // this.devices['lights_stovetop'] = new LightDevice('lights_stovetop', this.rooms.kitchen) // TODO
-        // TODO: implement garden lights
         this.devices = Object.assign({}, this.devices, this.lights)
-
+        
         this.devices['television'] = new TelevisionDevice('television', this.rooms.livingroom, 50, this.utilities.electricity)
+        this.devices['lights_TV'] = new LightDevice('lights_TV', this.rooms.livingroom, 10, this.utilities.electricity)
 
         let windows_in_rooms = {kitchen:2, livingroom:2, garage:1, mainbathroom:1, garden:1, stairs:1, 
             bedroom1:2, bedroom2:1, bedroom3:1, secondarybathroom:1, corridor:0}
@@ -106,17 +106,18 @@ class House {
         this.devices = Object.assign({}, this.devices, this.shutters)
 
         this.devices['garage_door'] = new GarageDoorDevice('garage_door', this.rooms.garage)
+        this.devices['irrigation_system'] = new Irrigation.IrrigationSystem('irrigation_system', this.rooms.garden)
         this.devices['solar_panels'] = new SolarPanelDevice('solar_panels', this.utilities.electricity)
 
         this.devices['lawn_mower1'] = new LawnMower.LawnMowerDevice('lawn_mower1', this.rooms.garden, 'a11')
         this.devices['lawn_mower2'] = new LawnMower.LawnMowerDevice('lawn_mower2', this.rooms.garden, 'a45')
+        
         this.devices['vacuum_cleaner1'] = new VacuumCleaner.VacuumCleanerDevice('vacuum_cleaner1', this.rooms.livingroom, this.rooms)
         this.devices['vacuum_cleaner2'] = new VacuumCleaner.VacuumCleanerDevice('vacuum_cleaner2', this.rooms.secondarybathroom, this.rooms)
     }
 
 }
 
-let world = 
 
 class RetryGoal extends Goal {}
 class RetryIntention extends Intention {
@@ -161,16 +162,16 @@ let agents = []
 // agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity))
 
 // ------------------------light agent--------------------------------------------------------------------
-agents.light_agent = new Agent('light_agent')
+// agents.light_agent = new Agent('light_agent')
 
-agents.light_agent.intentions.push(PersonDetectionIntention)
-agents.light_agent.postSubGoal(new PersonDetectionGoal(house.people))
+// agents.light_agent.intentions.push(PersonDetectionIntention)
+// agents.light_agent.postSubGoal(new PersonDetectionGoal(house.people))
 
-agents.light_agent.intentions.push(BrightnessSensingIntention)
-agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
+// agents.light_agent.intentions.push(BrightnessSensingIntention)
+// agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
 
-agents.light_agent.intentions.push(LightControlIntention)
-agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people, house.rooms.garden))
+// agents.light_agent.intentions.push(LightControlIntention)
+// agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people, house.rooms.garden))
 
 
 // ------------------------shutter agent--------------------------------------------------------------------
@@ -179,6 +180,12 @@ agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, h
 // agents.shutter_agent.intentions.push(ShutterControlIntention)
 // agents.shutter_agent.postSubGoal(new ShutterControlGoal(house.shutters))
 
+
+// ------------------------irrigation agent--------------------------------------------------------------------
+agents.irrigation_agent = new Agent('irrigation_agent')
+
+agents.irrigation_agent.intentions.push(Irrigation.IrrigationControlIntention)
+agents.irrigation_agent.postSubGoal(new Irrigation.IrrigationControlGoal(house.devices.irrigation_system, house.rooms.garden, house.utilities.weather))
 
 
 // ------------------------lawn mower agents--------------------------------------------------------------------
