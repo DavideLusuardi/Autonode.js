@@ -104,8 +104,12 @@ class Suck extends pddlActionIntention {
     }
 
     *exec ({r}=parameters) {
-        this.agent.devices.vacuum_cleaner.suck(r)
-        yield new Promise(res=>setTimeout(res,100))
+        if ( this.checkPrecondition() ) {
+            this.agent.devices.vacuum_cleaner.suck(r)
+            yield new Promise(res=>setTimeout(res,100))
+        }
+        else
+            throw new Error('pddl precondition not valid'); //Promise is rejected!        
     }
 
     static parameters = ['r']
@@ -122,8 +126,12 @@ class Move extends pddlActionIntention {
     }
 
     *exec ({r1, r2}=parameters) {
-        this.agent.devices.vacuum_cleaner.move(r2)
-        yield new Promise(res=>setTimeout(res,100))
+        if ( this.checkPrecondition() ) {
+            this.agent.devices.vacuum_cleaner.move(r2)
+            yield new Promise(res=>setTimeout(res,100))
+        }
+        else
+            throw new Error('pddl precondition not valid'); //Promise is rejected!        
     }
 
     static parameters = ['r1', 'r2']
