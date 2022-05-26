@@ -10,13 +10,11 @@ const colors = ['red', 'blue', 'green', 'yellow', 'magenta', 'cyan', 'redBright'
  */
 class Agent {
 
-    constructor (name, agents={}, devices={}) {
+    constructor (name, devices={}) {
         this.name = name
         this.id = nextId++
 
-        this.agents = agents
         this.devices = devices
-        this.actions = {}
 
         /** @type {Beliefset} beliefs */
         this.beliefs = new Beliefset()
@@ -90,20 +88,6 @@ class Agent {
 
 }
 
-
-
-// const {LightOn} = require('./bdi/Goal')
-// const intentions =  require('./bdi/Intention')
-
-// postSubGoal(new LightOn({l: 'light1'}))
-
-
-// var kitchenAgent = new Agent('kitchen')
-// kitchenAgent.intentions.push(...Object.values(intentions))
-// kitchenAgent.postSubGoal(new LightOn({l: 'light0'}))
-
-// environment.facts.push('in-room kitchen Marco')
-// environment.facts.push('light-on light1')
 
 
 module.exports = Agent

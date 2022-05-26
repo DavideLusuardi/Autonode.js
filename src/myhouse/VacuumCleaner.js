@@ -132,21 +132,5 @@ class Move extends pddlActionIntention {
 
 }
 
-// TODO
-// class TurnLightOn extends pddlActionIntention {
-
-//     *exec () {
-//         // this.agent.agents.house_agent.perform... // perform turn on light from another agent TODO
-//         for ( let b of this.effect )
-//             this.agent.beliefs.apply(b)
-//         yield new Promise(res=>setTimeout(res,100))
-//         this.log('effects applied')
-//     }
-
-//     static parameters = ['r1', 'r2']
-//     static precondition = [ ['at', 'r1'], ['connected', 'r1', 'r2'] ]
-//     static effect = [ ['not at', 'r1'], ['at', 'r2'] ]
-
-// }
 
 module.exports = {VacuumCleanerDevice, SensingGoal, SensingIntention, SuckGoal, Suck, MoveGoal, Move}
