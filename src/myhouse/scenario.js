@@ -76,7 +76,7 @@ class House {
         // TODO: aggiungere altre persone
         // people -------------------------------------------------------
         this.people = {
-            luca: new Person.Person(this, 'luca', this.rooms.mainbathroom.name),
+            luca: new Person.Person(this, 'luca', this.rooms.bedroom1.name, true),
         }
 
         // devices -------------------------------------------------------
@@ -152,7 +152,7 @@ let agents = []
 
     let {PlanningIntention} = require('../pddl/Blackbox')([Person.Move])
     agents.luca_agent.intentions.push(PlanningIntention)
-    agents.luca_agent.postSubGoal( new PlanningGoal( { goal: [`in_room ${house.rooms.bedroom1.name}`] } ) )
+    // agents.luca_agent.postSubGoal( new PlanningGoal( { goal: [`in_room ${house.rooms.bedroom1.name}`] } ) )
 }
 
 // ------------------------house agent--------------------------------------------------------------------
@@ -174,16 +174,16 @@ let agents = []
 // agents.house_agent.postSubGoal(new EnergyMonitorGoal(house.utilities.electricity))
 
 // ------------------------light agent--------------------------------------------------------------------
-// agents.light_agent = new Agent('light_agent')
+agents.light_agent = new Agent('light_agent')
 
-// agents.light_agent.intentions.push(Person.PersonDetectionIntention)
-// agents.light_agent.postSubGoal(new Person.PersonDetectionGoal(house.people))
+agents.light_agent.intentions.push(Person.PersonDetectionIntention)
+agents.light_agent.postSubGoal(new Person.PersonDetectionGoal(house.people))
 
-// agents.light_agent.intentions.push(BrightnessSensingIntention)
-// agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
+agents.light_agent.intentions.push(BrightnessSensingIntention)
+agents.light_agent.postSubGoal(new BrightnessSensingGoal(house.rooms))
 
-// agents.light_agent.intentions.push(LightControlIntention)
-// agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people, house.rooms.garden))
+agents.light_agent.intentions.push(LightControlIntention)
+agents.light_agent.postSubGoal(new LightControlGoal(house.lights, house.rooms, house.people, house.rooms.garden))
 
 
 // ------------------------shutter agent--------------------------------------------------------------------
@@ -269,8 +269,10 @@ let agents = []
 // Daily schedule
 Clock.global.observe('mm', (mm, key) => {
     var time = Clock.global
-    // if(time.hh==7 && time.mm==0)
-    //     house.people.luca.moveTo(house.rooms.livingroom.name)
+    if(time.hh==7 && time.mm==0){
+        house.people.luca.is_sleeping = false
+        agents.luca_agent.postSubGoal( new PlanningGoal( { goal: [`in_room ${house.rooms.kitchen.name}`] } ) )
+    }
     // if(time.hh==8 && time.mm==30)
     //     house.people.luca.moveTo(house.rooms.kitchen.name)
     // if(time.hh==20 && time.mm==0)
@@ -292,7 +294,3 @@ Clock.global.observe('mm', (mm, key) => {
 })
 
 Clock.startTimer()
-
-
-
-// TODO: implement many intention for the same goal

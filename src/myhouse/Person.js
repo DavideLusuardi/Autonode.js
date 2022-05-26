@@ -4,12 +4,14 @@ const Intention = require('../bdi/Intention')
 const pddlActionIntention = require('../pddl/actions/pddlActionIntention')
 
 class Person extends Observable {
-    constructor (house, name, in_room) {
+    constructor (house, name, in_room, is_sleeping) {
         super()
         this.house = house;             // reference to the house
         this.name = name;               // non-observable
-        this.set('in_room', in_room)  // observable
+        this.set('in_room', in_room)    // observable
+        this.set('is_sleeping', is_sleeping)  // observable
     }
+    
     moveTo (to) {
         if ( this.house.rooms[this.in_room].doors_to.includes(to) ) {
             // console.log(this.name, 'moved from', this.in_room, 'to', to)
@@ -20,6 +22,14 @@ class Person extends Observable {
             console.log(this.name, 'failed moving from', this.in_room, 'to', to)
             return false
         }
+    }
+    
+    wakeUp(){
+        this.is_sleeping = false
+    }
+
+    goSleep(){
+        this.is_sleeping = true
     }
 }
 
@@ -117,7 +127,7 @@ class Move extends pddlActionIntention {
     *exec ({r1, r2}=parameters) {
         if ( this.checkPrecondition() ) {
             this.agent.devices.person.moveTo(r2)
-            yield new Promise(res=>setTimeout(res,100))
+            yield new Promise(res=>setTimeout(res,0))
         }
         else
             throw new Error('pddl precondition not valid'); //Promise is rejected!

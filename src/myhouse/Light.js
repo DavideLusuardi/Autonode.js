@@ -60,7 +60,6 @@ class LightControlIntention extends Intention {
     *exec () {
         var promises = []
         for (let [name, light] of Object.entries(this.lights)){
-            this.adaptLights(light.room) // set initial knowledge
             this.agent.beliefs.declare(`light_on ${light.name}`, light.status=='on')
             
             let brightness_promise = new Promise( async res => {
@@ -78,7 +77,7 @@ class LightControlIntention extends Intention {
                         this.adaptLights(light.room)
                     }
                 });
-                promises.push(person_promise)
+                promises.push(person_promise)                
             }
 
             if(light.room.name == this.garden.name){
@@ -91,7 +90,23 @@ class LightControlIntention extends Intention {
                 promises.push(garden_promise)                
             }
         }
-        
+
+        for(let [name, person] of Object.entries(this.people)){
+            this.agent.beliefs.declare(`is_sleeping ${person.name}`, person.is_sleeping)
+            let promise = new Promise( async res => {
+                while (true) {
+                    await person.notifyChange('is_sleeping')
+                    this.agent.beliefs.declare(`is_sleeping ${person.name}`, person.is_sleeping)
+                    this.adaptLights(person.in_room)
+                }
+            });
+            promises.push(promise)
+        }
+
+        for (let [name, light] of Object.entries(this.lights)){
+            this.adaptLights(light.room)
+        }
+
         yield Promise.all(promises)
     }
 
@@ -103,14 +118,18 @@ class LightControlIntention extends Intention {
             let brightness_high = this.agent.beliefs.check(`brightness_high ${light.room.name}`)
 
             let someone_in_room = false
+            let someone_is_sleeping = false
             for(let [name, person] of Object.entries(this.people)){
                 if(this.agent.beliefs.check(`person_in_room ${person.name} ${light.room.name}`)){
                     someone_in_room = true
-                    break
+                    if(this.agent.beliefs.check(`is_sleeping ${person.name}`)){
+                        someone_is_sleeping = true
+                        break
+                    }
                 }
             }
 
-            if(someone_in_room && !brightness_high){
+            if(someone_in_room && !someone_is_sleeping && !brightness_high){
                 if(light.status == 'off'){
                     light.turnOn()
                     this.agent.beliefs.declare(`light_on ${light.name}`)
