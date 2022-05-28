@@ -3,28 +3,33 @@ const Intention = require('../bdi/Intention')
 const Clock = require('../utils/Clock')
 
 class EnergyMonitorGoal extends Goal {
-    constructor (electricity_utility) {
+    constructor(electricity_utility) {
         super()
 
         this.electricity_utility = electricity_utility
     }
 }
 
+/**
+ * @class EnergyMonitorIntention
+ * Monitor the energy consumption of the entire house using the electricity_utility: log every hour the overall
+ * electricity consumed.
+ */
 class EnergyMonitorIntention extends Intention {
-    constructor (agent, goal) {
+    constructor(agent, goal) {
         super(agent, goal)
 
         this.electricity_utility = this.goal.electricity_utility
     }
-    
-    static applicable (goal) {
+
+    static applicable(goal) {
         return goal instanceof EnergyMonitorGoal
     }
 
-    *exec () {
+    *exec() {
         let promises = []
-        
-        let promise = new Promise( async res => {
+
+        let promise = new Promise(async res => {
             while (true) {
                 let hh = await Clock.global.notifyChange('hh')
                 this.log("total electricity consumption:", this.electricity_utility.total_consumption)
@@ -33,17 +38,17 @@ class EnergyMonitorIntention extends Intention {
         promises.push(promise)
 
         this.agent.beliefs.declare("high_electricity_consumption", this.electricity_utility.current_consumption >= 3000)
-        promise = new Promise( async res => {
+        promise = new Promise(async res => {
             while (true) {
                 await this.electricity_utility.notifyChange('current_consumption')
                 this.agent.beliefs.declare("high_electricity_consumption", this.electricity_utility.current_consumption >= 3000)
             }
         });
         promises.push(promise)
-        
+
         yield Promise.all([promise])
     }
 
 }
 
-module.exports = {EnergyMonitorGoal, EnergyMonitorIntention}
+module.exports = { EnergyMonitorGoal, EnergyMonitorIntention }

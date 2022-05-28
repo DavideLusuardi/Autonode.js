@@ -1,21 +1,24 @@
-const Observable =  require('../utils/Observable')
+const Observable = require('../utils/Observable')
 const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 
+/**
+ * @class Room
+ */
 class Room extends Observable {
-    constructor (name, floor, doors_to, dirt) {
+    constructor(name, floor, doors_to, dirt) {
         super()
         this.name = name;
         this.floor = floor
         this.doors_to = doors_to
         this.set('dirt', dirt)
     }
-    
-    clean(){
+
+    clean() {
         this.dirt = false
     }
 
-    dirty(){
+    dirty() {
         this.dirt = true
     }
 }

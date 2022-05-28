@@ -2,6 +2,9 @@ const Observable = require('./Observable')
 const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 
+/**
+ * Message communication between agents.
+ */
 class MessageDispatcher extends Observable {
     
     static #dispatchers = {}

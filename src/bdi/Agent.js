@@ -2,7 +2,7 @@ const Beliefset =  require('./Beliefset')
 const Intention = require('./Intention');
 const chalk = require('chalk');
 
-var nextId = 2
+var nextId = 0
 const colors = ['red', 'blue', 'green', 'yellow', 'magenta', 'cyan', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright']
 
 /**

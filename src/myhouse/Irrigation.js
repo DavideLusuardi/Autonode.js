@@ -1,22 +1,25 @@
-const Observable =  require('../utils/Observable')
+const Observable = require('../utils/Observable')
 const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 const Clock = require('../utils/Clock')
 
-
+/**
+ * @class IrrigationSystem
+ * Give water to plants and garden. Status can be 'on' or 'off'.
+ */
 class IrrigationSystem extends Observable {
-    constructor(name, room){
-        let init = {name: name, room: room, status: 'off'}
+    constructor(name, room) {
+        let init = { name: name, room: room, status: 'off' }
         super(init)
     }
 
-    turnOn(){
-        if(this.status == 'off'){
+    turnOn() {
+        if (this.status == 'off') {
             this.status = 'on'
         }
     }
-    turnOff(){
-        if(this.status == 'on'){
+    turnOff() {
+        if (this.status == 'on') {
             this.status = 'off'
         }
     }
@@ -24,7 +27,7 @@ class IrrigationSystem extends Observable {
 
 
 class IrrigationControlGoal extends Goal {
-    constructor (irrigation_system, garden, weather) {
+    constructor(irrigation_system, garden, weather) {
         super()
 
         this.irrigation_system = irrigation_system
@@ -33,33 +36,39 @@ class IrrigationControlGoal extends Goal {
     }
 }
 
+/**
+ * @class IrrigationControlIntention
+ * Control the irrigation system: start giving water at 6.00 AM for 30 minutes if
+ * has not rained in the last two days, the garden has not recevied water in the last two days
+ * and in the next 24 hours will not rain.
+ */
 class IrrigationControlIntention extends Intention {
-    constructor (agent, goal) {
+    constructor(agent, goal) {
         super(agent, goal)
 
         this.irrigation_system = this.goal.irrigation_system
         this.garden = this.goal.garden
         this.weather = this.goal.weather
     }
-    
-    static applicable (goal) {
+
+    static applicable(goal) {
         return goal instanceof IrrigationControlGoal
     }
 
-    *exec () {
-        let promise = new Promise( async res => {
+    *exec() {
+        let promise = new Promise(async res => {
             while (true) {
                 await Clock.global.notifyChange('mm')
-                if(Clock.global.hh >= 6 && Clock.global.mm < 30 && Clock.global.dd-2 >= this.weather.last_day_has_rained && 
-                        Clock.global.dd-2 >= this.garden.last_day_received_water && this.weather.raining_next24h==false){
-                    if(this.irrigation_system.status == 'off'){
+                if (Clock.global.hh >= 6 && Clock.global.mm < 30 && Clock.global.dd - 2 >= this.weather.last_day_has_rained &&
+                    Clock.global.dd - 2 >= this.garden.last_day_received_water && this.weather.raining_next24h == false) {
+                    if (this.irrigation_system.status == 'off') {
                         this.irrigation_system.turnOn()
                         this.garden.giveWater()
                         this.agent.beliefs.declare(`giving_water`)
                         this.log("giving water to garden and plants")
                     }
                 } else {
-                    if(this.irrigation_system.status == 'on'){
+                    if (this.irrigation_system.status == 'on') {
                         this.irrigation_system.turnOff()
                         this.agent.beliefs.undeclare(`giving_water`)
                         this.log("stop giving water to garden and plants")
@@ -73,4 +82,4 @@ class IrrigationControlIntention extends Intention {
 
 }
 
-module.exports = {IrrigationSystem, IrrigationControlGoal, IrrigationControlIntention}
+module.exports = { IrrigationSystem, IrrigationControlGoal, IrrigationControlIntention }
