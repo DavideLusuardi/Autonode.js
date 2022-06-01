@@ -2,7 +2,9 @@ const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 const Clock = require('../utils/Clock')
 
-
+/**
+ * @class BrightnessSensingGoal
+ */
 class BrightnessSensingGoal extends Goal {
     constructor(rooms) {
         super()
@@ -13,7 +15,9 @@ class BrightnessSensingGoal extends Goal {
 
 /**
  * @class BrightnessSensingIntention
- * Implementation of the brightness sensors: detects the brightness variation in each room.
+ * Implementation of the brightness sensors: detects the sun brightness variation in each room.
+ * To simulate sun behavior, brightness is high from 8 to 19.
+ * Declare in the agent beliefest `brightness_high room_name` when high.
  */
 class BrightnessSensingIntention extends Intention {
     constructor(agent, goal) {

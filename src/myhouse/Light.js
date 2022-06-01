@@ -6,7 +6,7 @@ const Observable = require('../utils/Observable')
 
 /**
  * @class LightDevice
- * The light bulb.
+ * The light bulb. Status can be 'on' or 'off'.
  */
 class LightDevice extends Observable {
     constructor(name, room, consumption, electricity_utility) {
@@ -27,7 +27,7 @@ class LightDevice extends Observable {
         if (this.status == 'off') {
             this.status = 'on'
             this.electricity_utility.current_consumption += this.consumption
-            Clock.global.observe('mm', this.consumption_callback)
+            Clock.global.observe('mm', this.consumption_callback) // update consumption every mm increment
         }
     }
 
@@ -44,20 +44,69 @@ class LightDevice extends Observable {
 }
 
 
+/**
+ * @class LightSensingGoal
+ */
+class LightSensingGoal extends Goal {
+    constructor(lights) {
+        super()
+
+        this.lights = lights
+    }
+}
+
+/**
+ * @class LightSensingIntention
+ * Detect the status of the lights.
+ * Declare in the agent beliefest `light_on light_name` when the light is on.
+ */
+class LightSensingIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+
+        this.lights = this.goal.lights
+    }
+
+    static applicable(goal) {
+        return goal instanceof LightSensingGoal
+    }
+
+    *exec() {
+        var promises = []
+        for (let [name, light] of Object.entries(this.lights)) {
+            this.agent.beliefs.declare(`light_on ${light.name}`, light.status == 'on')
+
+            let promise = new Promise(async res => {
+                while (true) {
+                    await light.notifyChange('status')
+                    this.agent.beliefs.declare(`light_on ${light.name}`, light.status == 'on')
+                }
+            });
+            promises.push(promise)
+        }
+
+        yield Promise.all(promises)
+    }
+
+}
+
+
+/**
+ * @class LightControlGoal
+ */
 class LightControlGoal extends Goal {
-    constructor(lights, rooms, people, garden) {
+    constructor(lights, people, garden) {
         super()
 
         this.lights = lights
         this.people = people
-        this.rooms = rooms
         this.garden = garden
     }
 }
 
 /**
  * @class LightControlIntention
- * Control the lights of the house: turn on the lights of the room if there is someone that is not sleeping
+ * Control the lights of the house: turn on the lights of the room if there is someone, nobody is sleeping
  * and the brightness of the room is low.
  * Control the lights of the garden: turn on the lights from 7.00 PM to 11.00 PM.
  */
@@ -67,7 +116,6 @@ class LightControlIntention extends Intention {
 
         this.lights = this.goal.lights
         this.people = this.goal.people
-        this.rooms = this.goal.rooms
         this.garden = this.goal.garden
     }
 
@@ -78,11 +126,9 @@ class LightControlIntention extends Intention {
     *exec() {
         var promises = []
         for (let [name, light] of Object.entries(this.lights)) {
-            this.agent.beliefs.declare(`light_on ${light.name}`, light.status == 'on')
-
             let brightness_promise = new Promise(async res => {
                 while (true) {
-                    let brightness_high = await this.agent.beliefs.notifyChange(`brightness_high ${light.room.name}`)
+                    await this.agent.beliefs.notifyChange(`brightness_high ${light.room.name}`)
                     this.adaptLights(light.room)
                 }
             });
@@ -91,7 +137,7 @@ class LightControlIntention extends Intention {
             for (let [name, person] of Object.entries(this.people)) {
                 let person_promise = new Promise(async res => {
                     while (true) {
-                        let person_in_room = await this.agent.beliefs.notifyChange(`person_in_room ${person.name} ${light.room.name}`)
+                        await this.agent.beliefs.notifyChange(`person_in_room ${person.name} ${light.room.name}`)
                         this.adaptLights(light.room)
                     }
                 });
@@ -110,11 +156,9 @@ class LightControlIntention extends Intention {
         }
 
         for (let [name, person] of Object.entries(this.people)) {
-            this.agent.beliefs.declare(`is_sleeping ${person.name}`, person.is_sleeping)
             let promise = new Promise(async res => {
                 while (true) {
-                    await person.notifyChange('is_sleeping')
-                    this.agent.beliefs.declare(`is_sleeping ${person.name}`, person.is_sleeping)
+                    await this.agent.beliefs.notifyChange(`is_sleeping ${person.name}`)
                     this.adaptLights(person.in_room)
                 }
             });
@@ -128,6 +172,15 @@ class LightControlIntention extends Intention {
         yield Promise.all(promises)
     }
 
+    /**
+     * Change lights status in the room based on the presence of people, the brightness in the room 
+     * and the presence of people sleeping.
+     * Turn on the lights of the room if there is someone, nobody is sleeping
+     * and the brightness of the room is low.
+     * Turn on the lights of the garden from 7.00 PM to 11.00 PM.
+     * 
+     * @param {Room} room The room in which there has been a change and lights could be change status
+     */
     adaptLights(room) {
         for (let [name, light] of Object.entries(this.lights)) {
             if (light.room.name != room.name)
@@ -150,18 +203,15 @@ class LightControlIntention extends Intention {
             if (someone_in_room && !someone_is_sleeping && !brightness_high) {
                 if (light.status == 'off') {
                     light.turnOn()
-                    this.agent.beliefs.declare(`light_on ${light.name}`)
                     this.log('lights turned on in room ' + light.room.name)
                 }
             } else if (room.name == this.garden.name && Clock.global.hh >= 19 && Clock.global.hh <= 22) {
                 if (light.status == 'off') {
                     light.turnOn()
-                    this.agent.beliefs.declare(`light_on ${light.name}`)
                     this.log('lights turned on in room ' + light.room.name)
                 }
             } else if (light.status == 'on') {
                 light.turnOff()
-                this.agent.beliefs.undeclare(`light_on ${light.name}`)
                 this.log('lights turned off in room ' + light.room.name)
             }
 
@@ -171,4 +221,4 @@ class LightControlIntention extends Intention {
 }
 
 
-module.exports = { LightDevice, LightControlGoal, LightControlIntention }
+module.exports = { LightDevice, LightSensingGoal, LightSensingIntention, LightControlGoal, LightControlIntention }

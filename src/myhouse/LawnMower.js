@@ -13,42 +13,55 @@ class LawnMowerDevice extends Observable {
         super(init)
     }
 
+    /**
+     * 
+     * @param {String} area The garden area to cut 
+     */
     cut(area) {
         this.garden.grass_height[area] = 'short'
     }
 
+    /**
+     * 
+     * @param {String} area The garden area to which move
+     */
     move(area) {
         this.at = area
     }
 }
 
 
-class SensingGoal extends Goal {
-    constructor(garden, people, weather) {
+/**
+ * @class LawnMowerSensingGoal
+ */
+class LawnMowerSensingGoal extends Goal {
+    constructor(garden, weather) {
         super()
 
         this.garden = garden
-        this.people = people
         this.weather = weather
     }
 }
 
 /**
- * @class SensingIntention
+ * @class LawnMowerSensingIntention
  * Implementation of the sensors of the lawn mower: detect the position of the lawn mower,
- * the grass height of each grass area, the presence of people in the garden and if it is raining.
+ * the grass height of each grass area and if it is raining.
+ * Declare in the agent beliefest `connected area1 area2` to specify the connection beween garden areas,
+ * `at area` to specify the position of the lawn mower,
+ * `tall-grass area` when the grass in that area is high,
+ * `not-raining` if the weather says that it is not raining in this moment.
  */
-class SensingIntention extends Intention {
+class LawnMowerSensingIntention extends Intention {
     constructor(agent, goal) {
         super(agent, goal)
 
         this.garden = this.goal.garden
-        this.people = this.goal.people
         this.weather = this.goal.weather
     }
 
     static applicable(goal) {
-        return goal instanceof SensingGoal
+        return goal instanceof LawnMowerSensingGoal
     }
 
     *exec() {
@@ -61,7 +74,7 @@ class SensingIntention extends Intention {
             while (true) {
                 await this.agent.devices.lawn_mower.notifyChange('at')
                 for (let literal of this.agent.beliefs.matchingLiterals(`at *`)) {
-                    this.agent.beliefs.undeclare(literal)
+                    this.agent.beliefs.undeclare(literal) // undeclare the previous position of the lawn mower
                 }
                 this.agent.beliefs.declare(`at ${this.agent.devices.lawn_mower.at}`)
             }
@@ -81,18 +94,6 @@ class SensingIntention extends Intention {
             promises.push(promise)
         }
 
-        this.agent.beliefs.declare(`not-people-detected`, this.someone_detected() == false)
-        for (let [name, person] of Object.entries(this.people)) {
-            let promise = new Promise(async res => {
-                while (true) {
-                    await person.notifyChange('in_room')
-                    this.agent.beliefs.declare(`not-people-detected`, this.someone_detected() == false)
-                }
-            });
-
-            promises.push(promise)
-        }
-
         this.agent.beliefs.declare(`not-raining`, this.weather.is_raining == false)
         promise = new Promise(async res => {
             while (true) {
@@ -105,24 +106,13 @@ class SensingIntention extends Intention {
         yield Promise.all(promises)
     }
 
-    /**
-     * 
-     * @returns true if there is someone in the garden
-     */
-    someone_detected() {
-        for (let [name, person] of Object.entries(this.people)) {
-            if (person.in_room == this.garden.name)
-                return true
-        }
-        return false
-    }
 }
 
 
 
 class Cut extends pddlActionIntention {
 
-    *exec({ a } = parameters) {
+    *exec({ a, garden_name } = parameters) {
         if (this.checkPrecondition()) {
             this.agent.devices.lawn_mower.cut(a)
             yield new Promise(res => setTimeout(res, 100))
@@ -131,8 +121,8 @@ class Cut extends pddlActionIntention {
             throw new Error('pddl precondition not valid'); //Promise is rejected!
     }
 
-    static parameters = ['a']
-    static precondition = [['not-raining'], ['not-people-detected'], ['tall-grass', 'a'], ['at', 'a']]
+    static parameters = ['a', 'garden']
+    static precondition = [['not-raining'], ['free_room', 'garden'], ['tall-grass', 'a'], ['at', 'a']]
     static effect = [['not tall-grass', 'a']]
 
 }
@@ -157,4 +147,4 @@ class Move extends pddlActionIntention {
 
 
 
-module.exports = { LawnMowerDevice, SensingGoal, SensingIntention, Cut, Move }
+module.exports = { LawnMowerDevice, LawnMowerSensingGoal, LawnMowerSensingIntention, Cut, Move }

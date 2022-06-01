@@ -13,11 +13,18 @@ class IrrigationSystem extends Observable {
         super(init)
     }
 
+    /**
+     * Turn on the irrigation system if status is off.
+     */
     turnOn() {
         if (this.status == 'off') {
             this.status = 'on'
         }
     }
+
+    /**
+     * Turn off the irrigation system if status is on.
+     */
     turnOff() {
         if (this.status == 'on') {
             this.status = 'off'
@@ -26,6 +33,52 @@ class IrrigationSystem extends Observable {
 }
 
 
+/**
+ * @class IrrigationSensingGoal
+ */
+class IrrigationSensingGoal extends Goal {
+    constructor(irrigation_system, garden, weather) {
+        super()
+
+        this.irrigation_system = irrigation_system
+    }
+}
+
+/**
+ * @class IrrigationSensingIntention
+ * Sense the status of the irrigation system.
+ * Declare in the agent beliefest `giving_water` when the irrigation system is giving water.
+ */
+class IrrigationSensingIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+
+        this.irrigation_system = this.goal.irrigation_system
+    }
+
+    static applicable(goal) {
+        return goal instanceof IrrigationSensingGoal
+    }
+
+    *exec() {
+        this.agent.beliefs.declare(`giving_water`, this.irrigation_system.status=='on')
+
+        let promise = new Promise(async res => {
+            while (true) {
+                await this.irrigation_system.notifyChange('status')
+                this.agent.beliefs.declare(`giving_water`, this.irrigation_system.status=='on')
+            }
+        });
+
+        yield Promise.all([promise])
+    }
+
+}
+
+
+/**
+ * @class IrrigationControlGoal
+ */
 class IrrigationControlGoal extends Goal {
     constructor(irrigation_system, garden, weather) {
         super()
@@ -39,8 +92,8 @@ class IrrigationControlGoal extends Goal {
 /**
  * @class IrrigationControlIntention
  * Control the irrigation system: start giving water at 6.00 AM for 30 minutes if
- * has not rained in the last two days, the garden has not recevied water in the last two days
- * and in the next 24 hours will not rain.
+ * has not rained in the last two days, the garden has not received water in the last two days
+ * and will not rain in the next 24 hours.
  */
 class IrrigationControlIntention extends Intention {
     constructor(agent, goal) {
@@ -61,16 +114,14 @@ class IrrigationControlIntention extends Intention {
                 await Clock.global.notifyChange('mm')
                 if (Clock.global.hh >= 6 && Clock.global.mm < 30 && Clock.global.dd - 2 >= this.weather.last_day_has_rained &&
                     Clock.global.dd - 2 >= this.garden.last_day_received_water && this.weather.raining_next24h == false) {
-                    if (this.irrigation_system.status == 'off') {
+                    if (!this.agent.beliefs.check(`giving_water`)) {
                         this.irrigation_system.turnOn()
                         this.garden.giveWater()
-                        this.agent.beliefs.declare(`giving_water`)
                         this.log("giving water to garden and plants")
                     }
                 } else {
                     if (this.irrigation_system.status == 'on') {
                         this.irrigation_system.turnOff()
-                        this.agent.beliefs.undeclare(`giving_water`)
                         this.log("stop giving water to garden and plants")
                     }
                 }
@@ -82,4 +133,4 @@ class IrrigationControlIntention extends Intention {
 
 }
 
-module.exports = { IrrigationSystem, IrrigationControlGoal, IrrigationControlIntention }
+module.exports = { IrrigationSystem, IrrigationSensingGoal, IrrigationSensingIntention, IrrigationControlGoal, IrrigationControlIntention }

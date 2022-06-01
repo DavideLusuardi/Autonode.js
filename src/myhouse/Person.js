@@ -5,6 +5,8 @@ const pddlActionIntention = require('../pddl/actions/pddlActionIntention')
 
 /**
  * @class Person
+ * 
+ * Attribute 'in_room' specifies in which room is the person, 'is_sleeping' specifies if the person is sleeping
  */
 class Person extends Observable {
     constructor(house, name, in_room, is_sleeping) {
@@ -40,18 +42,22 @@ class Person extends Observable {
 }
 
 
+/**
+ * @class PersonDetectionGoal
+ */
 class PersonDetectionGoal extends Goal {
     constructor(people) {
         super()
 
         this.people = people
-
     }
 }
 
 /**
  * @class PersonDetectionIntention
- * Detects the presence of people in each room.
+ * Detects the presence of each person in each room.
+ * Declare in the agent beliefest `person_in_room person_name room_name` 
+ * to specify the room in which the person is.
  */
 class PersonDetectionIntention extends Intention {
     constructor(agent, goal) {
@@ -74,7 +80,7 @@ class PersonDetectionIntention extends Intention {
                     let room = await person.notifyChange('in_room')
                     this.log(person.name + ' moved into ' + room)
                     for (let literal of this.agent.beliefs.matchingLiterals(`person_in_room ${person.name} *`)) {
-                        this.agent.beliefs.undeclare(literal)
+                        this.agent.beliefs.undeclare(literal) // undeclare the previous position of the person
                     }
                     this.agent.beliefs.declare(`person_in_room ${person.name} ${room}`)
                 }
@@ -87,58 +93,122 @@ class PersonDetectionIntention extends Intention {
 }
 
 
-class SensingGoal extends Goal {
-    constructor(person, rooms) {
+/**
+ * @class SomeoneInRoomDetectionGoal
+ */
+class SomeoneInRoomDetectionGoal extends Goal {
+    constructor(people, rooms) {
         super()
 
-        this.person = person
+        this.people = people
         this.rooms = rooms
     }
 }
 
 /**
- * @class SensingIntention
- * Detect where a person is. 
+ * @class SomeoneInRoomDetectionIntention
+ * Detects the presence of people in each room.
+ * Declare in the agent beliefest `someone_in_room room_name` and not `free_room room_name`
+ * when there is someone in the room. The predicate `free_room` is necessary in order to not
+ * have negative preconditions.
  */
-class SensingIntention extends Intention {
+class SomeoneInRoomDetectionIntention extends Intention {
     constructor(agent, goal) {
         super(agent, goal)
 
-        this.person = this.goal.person
+        this.people = this.goal.people
         this.rooms = this.goal.rooms
     }
 
     static applicable(goal) {
-        return goal instanceof SensingGoal
+        return goal instanceof SomeoneInRoomDetectionGoal
+    }
+
+    *exec() {
+        for (let [name, room] of Object.entries(this.rooms)) {
+            this.someone_detected(room) // set initial knowledge
+        }
+
+        var promises = []
+        for (let [name, person] of Object.entries(this.people)) {
+            let promise = new Promise(async res => {
+                while (true) {
+                    await person.notifyChange('in_room')
+                    for (let [name, room] of Object.entries(this.rooms)) {
+                        this.someone_detected(room)
+                    }
+                }
+            });
+
+            promises.push(promise)
+        }
+        yield Promise.all(promises)
+    }
+
+    someone_detected(room) {
+        for (let [name, person] of Object.entries(this.people)) {
+            if (person.in_room == room.name) {
+                this.agent.beliefs.declare(`someone_in_room ${room.name}`)
+                this.agent.beliefs.undeclare(`free_room ${room.name}`)
+                return true
+            }
+        }
+
+        this.agent.beliefs.undeclare(`someone_in_room ${room.name}`)
+        this.agent.beliefs.declare(`free_room ${room.name}`)
+        return false
+    }
+}
+
+
+/**
+ * @class SleepingSensingGoal
+ */
+class SleepingSensingGoal extends Goal {
+    constructor(people) {
+        super()
+
+        this.people = people
+    }
+}
+
+/**
+ * @class SleepingSensingIntention
+ * Detect when a person is sleeping.
+ * Declare in the agent beliefest `is_sleeping person_name` when the person is sleeping.
+ */
+class SleepingSensingIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+
+        this.people = this.goal.people
+    }
+
+    static applicable(goal) {
+        return goal instanceof SleepingSensingGoal
     }
 
     *exec() {
         var promises = []
-
-        for (let [name, room] of Object.entries(this.rooms)) { // init rooms connections
-            for (let to of room.doors_to)
-                this.agent.beliefs.declare(`connected ${room.name} ${to}`)
-        }
-
-        this.agent.beliefs.declare(`in_room ${this.person.in_room}`)
-        let promise = new Promise(async res => {
-            while (true) {
-                await this.person.notifyChange('in_room')
-                for (let literal of this.agent.beliefs.matchingLiterals(`in_room *`)) {
-                    this.agent.beliefs.undeclare(literal)
+        for (let [name, person] of Object.entries(this.people)) {
+            this.agent.beliefs.declare(`is_sleeping ${person.name}`, person.is_sleeping)
+            let promise = new Promise(async res => {
+                while (true) {
+                    await person.notifyChange('is_sleeping')
+                    this.agent.beliefs.declare(`is_sleeping ${person.name}`, person.is_sleeping)
                 }
-                this.agent.beliefs.declare(`in_room ${this.person.in_room}`)
-            }
-        });
-        promises.push(promise)
+            });
+            promises.push(promise)
+        }
 
         yield Promise.all(promises)
     }
 }
 
+
 class Move extends pddlActionIntention {
 
-    *exec({ r1, r2 } = parameters) {
+    *exec({ person, r1, r2 } = parameters) {
         if (this.checkPrecondition()) {
             this.agent.devices.person.moveTo(r2)
             yield new Promise(res => setTimeout(res, 0))
@@ -147,10 +217,16 @@ class Move extends pddlActionIntention {
             throw new Error('pddl precondition not valid'); //Promise is rejected!
     }
 
-    static parameters = ['r1', 'r2']
-    static precondition = [['in_room', 'r1'], ['connected', 'r1', 'r2']]
-    static effect = [['not in_room', 'r1'], ['in_room', 'r2']]
+    static parameters = ['person', 'r1', 'r2']
+    static precondition = [['person_in_room', 'person', 'r1'], ['connected', 'r1', 'r2']]
+    static effect = [['not person_in_room', 'person', 'r1'], ['person_in_room', 'person', 'r2']]
 
 }
 
-module.exports = { Person, PersonDetectionGoal, PersonDetectionIntention, SensingGoal, SensingIntention, Move }
+module.exports = {
+    Person,
+    PersonDetectionGoal, PersonDetectionIntention,
+    SomeoneInRoomDetectionGoal, SomeoneInRoomDetectionIntention,
+    SleepingSensingGoal, SleepingSensingIntention,
+    Move
+}

@@ -15,15 +15,72 @@ class GarageDoorDevice extends Observable {
         super(init)
     }
 
+    /**
+     * Open the garage door.
+     */
     open() {
         this.status = 'opened'
     }
+
+    /**
+     * Close the garage door.
+     */
     close() {
         this.status = 'closed'
     }
 }
 
 
+/**
+ * @class GarageDoorSensingGoal
+ */
+class GarageDoorSensingGoal extends Goal {
+    constructor(doors) {
+        super()
+
+        this.doors = doors
+    }
+}
+
+/**
+ * @class GarageDoorSensingIntention
+ * Implementation of the garage door sensor:
+ * declare in the agent beliefset `garage_door_open garage_door_name` when open.
+ */
+class GarageDoorSensingIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+
+        this.doors = this.goal.doors
+    }
+
+    static applicable(goal) {
+        return goal instanceof GarageDoorSensingGoal
+    }
+
+    *exec() {
+        var promises = []
+        for (let [name, door] of Object.entries(this.doors)) {
+            this.agent.beliefs.declare(`garage_door_open ${door.name}`, door.status == 'opened')
+
+            let promise = new Promise(async res => {
+                while (true) {
+                    await door.notifyChange('status')
+                    this.agent.beliefs.declare(`garage_door_open ${door.name}`, door.status == 'opened')
+                }
+            });
+
+            promises.push(promise)
+        }
+
+        yield Promise.all(promises)
+    }
+}
+
+
+/**
+ * @class GarageDoorControlGoal
+ */
 class GarageDoorControlGoal extends Goal {
     constructor(doors) {
         super()
@@ -34,8 +91,8 @@ class GarageDoorControlGoal extends Goal {
 
 /**
  * @class GarageDoorControlIntention
- * Implementation of the garage door sensor and logic.
- * Close the garage door if open at 9.00 PM. 
+ * Implementation of the garage door logic.
+ * Close the garage door if already open at 9.00 PM.
  */
 class GarageDoorControlIntention extends Intention {
     constructor(agent, goal) {
@@ -51,17 +108,14 @@ class GarageDoorControlIntention extends Intention {
     *exec() {
         var promises = []
         for (let [name, door] of Object.entries(this.doors)) {
-            this.agent.beliefs.declare(`garage_door_open ${door.name}`, door.status == 'opened') // set initial knowledge // TODO: check if knowledge present
-
             let promise = new Promise(async res => {
                 while (true) {
                     let hh = await Clock.global.notifyChange('hh')
 
                     if (hh >= 21) { // close the garage door if open at 9.00 PM
-                        if (door.status == 'opened') {
+                        if (this.agent.beliefs.check(`garage_door_open ${door.name}`)) {
                             door.close()
                             this.log('closing ' + door.name)
-                            this.agent.beliefs.undeclare(`garage_door_open ${door.name}`)
                         }
                     }
 
@@ -75,4 +129,4 @@ class GarageDoorControlIntention extends Intention {
     }
 }
 
-module.exports = { GarageDoorDevice, GarageDoorControlGoal, GarageDoorControlIntention }
+module.exports = { GarageDoorDevice, GarageDoorSensingGoal, GarageDoorSensingIntention, GarageDoorControlGoal, GarageDoorControlIntention }

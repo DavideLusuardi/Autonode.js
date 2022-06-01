@@ -21,6 +21,9 @@ class Garden extends Observable {
         super(init)
     }
 
+    /**
+     * Update the last day the garden has received water.
+     */
     giveWater() {
         this.last_day_received_water = Clock.getTime().dd
     }

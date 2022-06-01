@@ -23,4 +23,41 @@ class Room extends Observable {
     }
 }
 
-module.exports = Room
+
+/**
+ * @class RoomConnectionGoal
+ */
+ class RoomConnectionGoal extends Goal {
+    constructor(rooms) {
+        super()
+
+        this.rooms = rooms
+    }
+}
+
+/**
+ * @class RoomConnectionIntention
+ * Initialize room connections in the agent beliefset.
+ */
+class RoomConnectionIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+
+        this.rooms = this.goal.rooms
+    }
+
+    static applicable(goal) {
+        return goal instanceof RoomConnectionGoal
+    }
+
+    *exec() {
+        for (let room of this.rooms) {
+            for (let to of room.doors_to)
+                this.agent.beliefs.declare(`connected ${room.name} ${to}`)
+        }
+
+        yield Promise.all([])
+    }
+}
+
+module.exports = {Room, RoomConnectionGoal, RoomConnectionIntention}

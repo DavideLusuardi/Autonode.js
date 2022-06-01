@@ -24,7 +24,10 @@ class VacuumCleanerDevice extends Observable {
 }
 
 
-class SensingGoal extends Goal {
+/**
+ * @class VacuumSensingGoal
+ */
+class VacuumSensingGoal extends Goal {
     constructor(rooms, people) {
         super()
 
@@ -34,11 +37,11 @@ class SensingGoal extends Goal {
 }
 
 /**
- * @class SensingIntention
+ * @class VacuumSensingIntention
  * Detect the dirt of each room, the position of the vacuum cleaner and the presence of someone in the rooms.
  * The vacuum cannot clean the room when there is someone.
  */
-class SensingIntention extends Intention {
+class VacuumSensingIntention extends Intention {
     constructor(agent, goal) {
         super(agent, goal)
 
@@ -47,15 +50,12 @@ class SensingIntention extends Intention {
     }
 
     static applicable(goal) {
-        return goal instanceof SensingGoal
+        return goal instanceof VacuumSensingGoal
     }
 
     *exec() {
         var promises = []
         for (let [name, room] of Object.entries(this.rooms)) {
-            for (let to of room.doors_to)
-                this.agent.beliefs.declare(`connected ${room.name} ${to}`)
-
             this.agent.beliefs.declare(`dirty ${room.name}`, room.dirt)
             let promise = new Promise(async res => {
                 while (true) {
@@ -78,29 +78,7 @@ class SensingIntention extends Intention {
         });
         promises.push(promise)
 
-        for (let [name, room] of Object.entries(this.rooms)) {
-            this.agent.beliefs.declare(`cleanable ${room.name}`, this.someone_detected(room) == false)
-            for (let [name, person] of Object.entries(this.people)) {
-                let promise = new Promise(async res => {
-                    while (true) {
-                        await person.notifyChange('in_room')
-                        this.agent.beliefs.declare(`cleanable ${room.name}`, this.someone_detected(room) == false)
-                    }
-                });
-
-                promises.push(promise)
-            }
-        }
-
         yield Promise.all(promises)
-    }
-
-    someone_detected(room) {
-        for (let [name, person] of Object.entries(this.people)) {
-            if (person.in_room == room.name)
-                return true
-        }
-        return false
     }
 }
 
@@ -121,7 +99,7 @@ class Suck extends pddlActionIntention {
     }
 
     static parameters = ['r']
-    static precondition = [['cleanable', 'r'], ['dirty', 'r'], ['at', 'r']]
+    static precondition = [['free_room', 'r'], ['dirty', 'r'], ['at', 'r']]
     static effect = [['not dirty', 'r']]
 
 }
@@ -149,4 +127,8 @@ class Move extends pddlActionIntention {
 }
 
 
-module.exports = { VacuumCleanerDevice, SensingGoal, SensingIntention, SuckGoal, Suck, MoveGoal, Move }
+module.exports = { 
+    VacuumCleanerDevice, 
+    VacuumSensingGoal, VacuumSensingIntention, 
+    SuckGoal, Suck, MoveGoal, Move 
+}
