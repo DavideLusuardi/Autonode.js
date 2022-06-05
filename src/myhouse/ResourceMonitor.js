@@ -2,6 +2,10 @@ const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 const Clock = require('../utils/Clock')
 
+
+/**
+ * @class EnergyMonitorGoal
+ */
 class EnergyMonitorGoal extends Goal {
     constructor(electricity_utility) {
         super()
@@ -12,8 +16,10 @@ class EnergyMonitorGoal extends Goal {
 
 /**
  * @class EnergyMonitorIntention
- * Monitor the energy consumption of the entire house using the electricity_utility: log every hour the overall
- * electricity consumed.
+ * Monitor the energy consumption of the entire house using the electricity_utility: 
+ * log every hour the overall electricity consumed.
+ * Declare in the agent beliefset `high_electricity_consumption` when there is an 
+ * electricity consumption greater than 3 kW.
  */
 class EnergyMonitorIntention extends Intention {
     constructor(agent, goal) {
@@ -30,9 +36,13 @@ class EnergyMonitorIntention extends Intention {
         let promises = []
 
         let promise = new Promise(async res => {
+            let previous_total_consumption
             while (true) {
                 let hh = await Clock.global.notifyChange('hh')
-                this.log("total electricity consumption:", this.electricity_utility.total_consumption)
+                if (this.electricity_utility.total_consumption != previous_total_consumption){
+                    previous_total_consumption = this.electricity_utility.total_consumption
+                    this.log("total electricity consumption:", this.electricity_utility.total_consumption)
+                }
             }
         });
         promises.push(promise)

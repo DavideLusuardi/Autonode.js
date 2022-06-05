@@ -7,6 +7,7 @@ const Observable = require('../utils/Observable')
 /**
  * @class LightDevice
  * The light bulb. Status can be 'on' or 'off'.
+ * The consumption specifies how much energy use each light.
  */
 class LightDevice extends Observable {
     constructor(name, room, consumption, electricity_utility) {
@@ -58,7 +59,7 @@ class LightSensingGoal extends Goal {
 /**
  * @class LightSensingIntention
  * Detect the status of the lights.
- * Declare in the agent beliefest `light_on light_name` when the light is on.
+ * Declare in the agent beliefset `light_on light_name` when the light is on.
  */
 class LightSensingIntention extends Intention {
     constructor(agent, goal) {

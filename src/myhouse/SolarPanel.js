@@ -6,10 +6,12 @@ const Clock = require('../utils/Clock')
 
 /**
  * @class SolarPanelDevice
+ * The status can be 'active' or 'inactive'.
+ * When there is sun, the solar panels produce 2000 watt.
  */
 class SolarPanelDevice extends Observable {
     constructor(name, electricity_utility) {
-        let init = { name: name, status: 'inactive', production: 5000 }
+        let init = { name: name, status: 'inactive', production: 2000 }
         super(init)
 
         this.electricity_utility = electricity_utility
@@ -30,6 +32,9 @@ class SolarPanelDevice extends Observable {
         }
     }
 
+    /**
+     * Simulate the zero production of energy.
+     */
     deactivate() {
         if (this.status == 'active') {
             this.status = 'inactive'
@@ -41,6 +46,9 @@ class SolarPanelDevice extends Observable {
 }
 
 
+/**
+ * @class SolarPanelMonitorGoal
+ */
 class SolarPanelMonitorGoal extends Goal {
     constructor(solar_panel) {
         super()
@@ -52,6 +60,7 @@ class SolarPanelMonitorGoal extends Goal {
 /**
  * @class SolarPanelMonitorIntention
  * Monitor the solar panel status.
+ * Declare in the agent beliefset `solar_panel_active` when the solar panels are producing energy.
  */
 class SolarPanelMonitorIntention extends Intention {
     constructor(agent, goal) {

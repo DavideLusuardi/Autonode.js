@@ -3,6 +3,9 @@ const Goal = require('../bdi/Goal')
 const Intention = require('../bdi/Intention')
 const Clock = require('../utils/Clock')
 
+/**
+ * @class Garden
+ */
 class Garden extends Observable {
     /**
      * @param {*} name Identifier of the garden

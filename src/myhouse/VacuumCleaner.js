@@ -6,6 +6,7 @@ const Intention = require('../bdi/Intention')
 
 /**
  * @class VacuumCleanerDevice
+ * A vacuum cleaner can move between rooms and clean them.
  */
 class VacuumCleanerDevice extends Observable {
     constructor(name, room, rooms) {
@@ -14,10 +15,18 @@ class VacuumCleanerDevice extends Observable {
         this.rooms = rooms
     }
 
+    /**
+     * 
+     * @param {String} room_name The room to clean
+     */
     suck(room_name) {
         this.rooms[room_name].clean()
     }
 
+    /**
+     * 
+     * @param {String} room_name The room to which move
+     */
     move(room_name) {
         this.at = room_name
     }
@@ -38,8 +47,10 @@ class VacuumSensingGoal extends Goal {
 
 /**
  * @class VacuumSensingIntention
- * Detect the dirt of each room, the position of the vacuum cleaner and the presence of someone in the rooms.
+ * Detect the dirt in each room and the position of the vacuum cleaner in the house.
  * The vacuum cannot clean the room when there is someone.
+ * Declare in the agent beliefset `dirty room_name` to specify that the room is to clean and
+ * `at room_name` to specify the position of the vacuum cleaner.
  */
 class VacuumSensingIntention extends Intention {
     constructor(agent, goal) {
@@ -92,7 +103,7 @@ class Suck extends pddlActionIntention {
     *exec({ r } = parameters) {
         if (this.checkPrecondition()) {
             this.agent.devices.vacuum_cleaner.suck(r)
-            yield new Promise(res => setTimeout(res, 100))
+            yield new Promise(res => setTimeout(res, 0))
         }
         else
             throw new Error('pddl precondition not valid'); //Promise is rejected!        
@@ -114,7 +125,7 @@ class Move extends pddlActionIntention {
     *exec({ r1, r2 } = parameters) {
         if (this.checkPrecondition()) {
             this.agent.devices.vacuum_cleaner.move(r2)
-            yield new Promise(res => setTimeout(res, 100))
+            yield new Promise(res => setTimeout(res, 0))
         }
         else
             throw new Error('pddl precondition not valid'); //Promise is rejected!        

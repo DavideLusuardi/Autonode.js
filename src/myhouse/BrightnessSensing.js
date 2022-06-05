@@ -17,7 +17,7 @@ class BrightnessSensingGoal extends Goal {
  * @class BrightnessSensingIntention
  * Implementation of the brightness sensors: detects the sun brightness variation in each room.
  * To simulate sun behavior, brightness is high from 8 to 19.
- * Declare in the agent beliefest `brightness_high room_name` when high.
+ * Declare in the agent beliefset `brightness_high room_name` when high.
  */
 class BrightnessSensingIntention extends Intention {
     constructor(agent, goal) {

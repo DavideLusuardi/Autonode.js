@@ -4,7 +4,9 @@ const Clock = require('../utils/Clock')
 const Observable = require('../utils/Observable')
 
 /**
- * @class TelevisionDevice 
+ * @class TelevisionDevice
+ * Status can be 'on' or 'off'.
+ * The consumption specifies how much energy use the television.
  */
 class TelevisionDevice extends Observable {
     constructor(name, room, consumption, electricity_utility) {
@@ -38,6 +40,9 @@ class TelevisionDevice extends Observable {
 }
 
 
+/**
+ * @class TelevisionSensingGoal
+ */
 class TelevisionSensingGoal extends Goal {
     constructor(television) {
         super()
@@ -49,6 +54,7 @@ class TelevisionSensingGoal extends Goal {
 /**
  * @class TelevisionSensingIntention
  * Monitor the status of the television.
+ * Declare in the agent beliefset `television_on` when the TV is on.
  */
 class TelevisionSensingIntention extends Intention {
     constructor(agent, goal) {
@@ -78,6 +84,9 @@ class TelevisionSensingIntention extends Intention {
 }
 
 
+/**
+ * @class TelevisionControlGoal
+ */
 class TelevisionControlGoal extends Goal {
     constructor(television, lights_TV) {
         super()
@@ -91,6 +100,7 @@ class TelevisionControlGoal extends Goal {
  * @class TelevisionControlIntention
  * Control the television: turn it off when nobody is watching it, show the news in the morning
  * and turn it on in the evening.
+ * Control the lights of the television: turn the lights on in the evening to have a relaxing atmosphere.
  */
 class TelevisionControlIntention extends Intention {
     constructor(agent, goal) {

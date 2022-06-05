@@ -47,7 +47,7 @@ class LawnMowerSensingGoal extends Goal {
  * @class LawnMowerSensingIntention
  * Implementation of the sensors of the lawn mower: detect the position of the lawn mower,
  * the grass height of each grass area and if it is raining.
- * Declare in the agent beliefest `connected area1 area2` to specify the connection beween garden areas,
+ * Declare in the agent beliefset `connected area1 area2` to specify the connection between garden areas,
  * `at area` to specify the position of the lawn mower,
  * `tall-grass area` when the grass in that area is high,
  * `not-raining` if the weather says that it is not raining in this moment.
@@ -115,7 +115,7 @@ class Cut extends pddlActionIntention {
     *exec({ a, garden_name } = parameters) {
         if (this.checkPrecondition()) {
             this.agent.devices.lawn_mower.cut(a)
-            yield new Promise(res => setTimeout(res, 100))
+            yield new Promise(res => setTimeout(res, 0))
         }
         else
             throw new Error('pddl precondition not valid'); //Promise is rejected!
@@ -133,7 +133,7 @@ class Move extends pddlActionIntention {
     *exec({ a1, a2 } = parameters) {
         if (this.checkPrecondition()) {
             this.agent.devices.lawn_mower.move(a2)
-            yield new Promise(res => setTimeout(res, 100))
+            yield new Promise(res => setTimeout(res, 0))
         }
         else
             throw new Error('pddl precondition not valid'); //Promise is rejected!

@@ -56,7 +56,7 @@ class PersonDetectionGoal extends Goal {
 /**
  * @class PersonDetectionIntention
  * Detects the presence of each person in each room.
- * Declare in the agent beliefest `person_in_room person_name room_name` 
+ * Declare in the agent beliefset `person_in_room person_name room_name` 
  * to specify the room in which the person is.
  */
 class PersonDetectionIntention extends Intention {
@@ -107,10 +107,10 @@ class SomeoneInRoomDetectionGoal extends Goal {
 
 /**
  * @class SomeoneInRoomDetectionIntention
- * Detects the presence of people in each room.
- * Declare in the agent beliefest `someone_in_room room_name` and not `free_room room_name`
- * when there is someone in the room. The predicate `free_room` is necessary in order to not
- * have negative preconditions.
+ * Detects if there is someone in the rooms.
+ * Declare in the agent beliefset `someone_in_room room_name` and not `free_room room_name`
+ * when there is someone in the room. The predicate `free_room` is necessary in order to
+ * avoid negative preconditions.
  */
 class SomeoneInRoomDetectionIntention extends Intention {
     constructor(agent, goal) {
@@ -175,7 +175,7 @@ class SleepingSensingGoal extends Goal {
 /**
  * @class SleepingSensingIntention
  * Detect when a person is sleeping.
- * Declare in the agent beliefest `is_sleeping person_name` when the person is sleeping.
+ * Declare in the agent beliefset `is_sleeping person_name` when the person is sleeping.
  */
 class SleepingSensingIntention extends Intention {
     constructor(agent, goal) {

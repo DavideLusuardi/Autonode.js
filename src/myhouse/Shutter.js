@@ -5,6 +5,7 @@ const Clock = require('../utils/Clock')
 
 /**
  * @class Shutter
+ * Status can be 'up' or 'down'.
  */
 class ShutterDevice extends Observable {
     constructor(name, room) {
@@ -21,7 +22,9 @@ class ShutterDevice extends Observable {
 }
 
 
-
+/**
+ * @class ShutterSensingGoal
+ */
 class ShutterSensingGoal extends Goal {
     constructor(shutters) {
         super()
@@ -33,6 +36,7 @@ class ShutterSensingGoal extends Goal {
 /**
  * @class ShutterSensingIntention
  * Sense the status of the shutters.
+ * Declare in the agent beliefset `shutter_up` when the shutter is up.
  */
 class ShutterSensingIntention extends Intention {
     constructor(agent, goal) {
@@ -64,6 +68,10 @@ class ShutterSensingIntention extends Intention {
     }
 }
 
+
+/**
+ * @class ShutterControlGoal
+ */
 class ShutterControlGoal extends Goal {
     constructor(shutters) {
         super()

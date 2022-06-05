@@ -37,7 +37,7 @@ class IrrigationSystem extends Observable {
  * @class IrrigationSensingGoal
  */
 class IrrigationSensingGoal extends Goal {
-    constructor(irrigation_system, garden, weather) {
+    constructor(irrigation_system) {
         super()
 
         this.irrigation_system = irrigation_system
@@ -47,7 +47,7 @@ class IrrigationSensingGoal extends Goal {
 /**
  * @class IrrigationSensingIntention
  * Sense the status of the irrigation system.
- * Declare in the agent beliefest `giving_water` when the irrigation system is giving water.
+ * Declare in the agent beliefset `giving_water` when the irrigation system is giving water.
  */
 class IrrigationSensingIntention extends Intention {
     constructor(agent, goal) {
