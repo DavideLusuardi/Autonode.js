@@ -20,7 +20,7 @@ class Garden extends Observable {
         let init = {
             name: name, floor: floor, doors_to: doors_to, grass_areas: grass_areas, connected_areas: connected_areas, 
             grass_height: grass_height, ground_slope: ground_slope, last_day_received_water: -2
-        } // TODO: remove ground_slope?
+        }
         super(init)
     }
 

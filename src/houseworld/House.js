@@ -71,10 +71,10 @@ class House {
             room2.doors_to.push(room1.name)
         })
 
-        // TODO: aggiungere altre persone
         // people -------------------------------------------------------
         this.people = {
             luca: new Person.Person(this, 'luca', this.rooms.bedroom1.name, true),
+            maria: new Person.Person(this, 'maria', this.rooms.bedroom1.name, true)
         }
 
         // devices -------------------------------------------------------

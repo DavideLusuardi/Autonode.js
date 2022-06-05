@@ -1,0 +1,450 @@
+luca_agent                     Trying to use intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#0:{}}
+luca_agent                     Trying to use intention PersonDetectionIntention to achieve goal {PersonDetectionGoal#1:{}}
+maria_agent                    Trying to use intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#2:{}}
+maria_agent                    Trying to use intention PersonDetectionIntention to achieve goal {PersonDetectionGoal#3:{}}
+house_agent                    Trying to use intention SomeoneInRoomDetectionIntention to achieve goal {SomeoneInRoomDetectionGoal#4:{}}
+house_agent                    Trying to use intention TelevisionSensingIntention to achieve goal {TelevisionSensingGoal#5:{}}
+house_agent                    Trying to use intention TelevisionControlIntention to achieve goal {TelevisionControlGoal#6:{}}
+house_agent                    Trying to use intention GarageDoorSensingIntention to achieve goal {GarageDoorSensingGoal#7:{}}
+house_agent                    Trying to use intention GarageDoorControlIntention to achieve goal {GarageDoorControlGoal#8:{}}
+house_agent                    Trying to use intention SolarPanelMonitorIntention to achieve goal {SolarPanelMonitorGoal#9:{}}
+house_agent                    Trying to use intention EnergyMonitorIntention to achieve goal {EnergyMonitorGoal#10:{}}
+light_agent                    Trying to use intention PersonDetectionIntention to achieve goal {PersonDetectionGoal#11:{}}
+light_agent                    Trying to use intention SleepingSensingIntention to achieve goal {SleepingSensingGoal#12:{}}
+light_agent                    Trying to use intention BrightnessSensingIntention to achieve goal {BrightnessSensingGoal#13:{}}
+light_agent                    Trying to use intention LightSensingIntention to achieve goal {LightSensingGoal#14:{}}
+light_agent                    Trying to use intention LightControlIntention to achieve goal {LightControlGoal#15:{}}
+shutter_agent                  Trying to use intention ShutterSensingIntention to achieve goal {ShutterSensingGoal#16:{}}
+shutter_agent                  Trying to use intention ShutterControlIntention to achieve goal {ShutterControlGoal#17:{}}
+irrigation_agent               Trying to use intention IrrigationSensingIntention to achieve goal {IrrigationSensingGoal#18:{}}
+irrigation_agent               Trying to use intention IrrigationControlIntention to achieve goal {IrrigationControlGoal#19:{}}
+lawn_mower1                    Trying to use intention SomeoneInRoomDetectionIntention to achieve goal {SomeoneInRoomDetectionGoal#20:{}}
+lawn_mower1                    Trying to use intention LawnMowerSensingIntention to achieve goal {LawnMowerSensingGoal#21:{}}
+lawn_mower2                    Trying to use intention SomeoneInRoomDetectionIntention to achieve goal {SomeoneInRoomDetectionGoal#22:{}}
+lawn_mower2                    Trying to use intention LawnMowerSensingIntention to achieve goal {LawnMowerSensingGoal#23:{}}
+vacuum_cleaner1                Trying to use intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#24:{}}
+vacuum_cleaner1                Trying to use intention SomeoneInRoomDetectionIntention to achieve goal {SomeoneInRoomDetectionGoal#25:{}}
+vacuum_cleaner1                Trying to use intention VacuumSensingIntention to achieve goal {VacuumSensingGoal#26:{}}
+vacuum_cleaner1                Trying to use intention PostmanAcceptAllRequest to achieve goal {Postman#27:{}}
+vacuum_cleaner2                Trying to use intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#28:{}}
+vacuum_cleaner2                Trying to use intention SomeoneInRoomDetectionIntention to achieve goal {SomeoneInRoomDetectionGoal#29:{}}
+vacuum_cleaner2                Trying to use intention VacuumSensingIntention to achieve goal {VacuumSensingGoal#30:{}}
+vacuum_cleaner2                Trying to use intention PostmanAcceptAllRequest to achieve goal {Postman#31:{}}
+luca_agent>PersonDetectionIntention#1 luca moved into bedroom1
+maria_agent>PersonDetectionIntention#3 maria moved into bedroom1
+house_agent>SolarPanelMonitorIntention#9 solar_panel inactive
+house_agent>EnergyMonitorIntention#10 total electricity consumption: 0
+light_agent>PersonDetectionIntention#11 luca moved into bedroom1
+light_agent>PersonDetectionIntention#11 maria moved into bedroom1
+luca_agent                     Succesfully used intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#0:{}}
+maria_agent                    Succesfully used intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#2:{}}
+vacuum_cleaner1                Succesfully used intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#24:{}}
+vacuum_cleaner2                Succesfully used intention RoomConnectionIntention to achieve goal {RoomConnectionGoal#28:{}}
+0:06:00 irrigation_agent>IrrigationControlIntention#19 giving water to garden and plants
+0:06:15 irrigation_agent>IrrigationControlIntention#19 stop giving water to garden and plants
+0:07:00 luca_agent                     Trying to use intention PlanningIntention to achieve goal {PddlGoal#32:{goal:["person_in_room luca kitchen"]}}
+maria_agent                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#33:{goal:["person_in_room maria kitchen"]}}
+shutter_agent>ShutterControlIntention#17 shutter kitchen up
+shutter_agent>ShutterControlIntention#17 shutter kitchen up
+shutter_agent>ShutterControlIntention#17 shutter livingroom up
+shutter_agent>ShutterControlIntention#17 shutter livingroom up
+shutter_agent>ShutterControlIntention#17 shutter garage up
+shutter_agent>ShutterControlIntention#17 shutter mainbathroom up
+shutter_agent>ShutterControlIntention#17 shutter garden up
+shutter_agent>ShutterControlIntention#17 shutter stairs up
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 up
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 up
+shutter_agent>ShutterControlIntention#17 shutter bedroom2 up
+shutter_agent>ShutterControlIntention#17 shutter bedroom3 up
+shutter_agent>ShutterControlIntention#17 shutter secondarybathroom up
+0:07:15 luca_agent>PlanningIntention#32 Plan found:
+luca_agent>PlanningIntention#32 1 (move luca bedroom1 corridor)
+luca_agent>PlanningIntention#32 2 (move luca corridor stairs)
+luca_agent>PlanningIntention#32 3 (move luca stairs livingroom)
+luca_agent>PlanningIntention#32 4 (move luca livingroom kitchen)
+luca_agent>PlanningIntention#32 Starting sequential step with Intention: (Move luca bedroom1 corridor) Effect: not person_in_room luca bedroom1,person_in_room luca corridor
+luca_agent>PersonDetectionIntention#1 luca moved into corridor
+light_agent>PersonDetectionIntention#11 luca moved into corridor
+light_agent>LightControlIntention#15 lights turned on in room bedroom1
+light_agent>LightControlIntention#15 lights turned on in room corridor
+maria_agent>PlanningIntention#33 Plan found:
+maria_agent>PlanningIntention#33 1 (move maria bedroom1 corridor)
+maria_agent>PlanningIntention#33 2 (move maria corridor stairs)
+maria_agent>PlanningIntention#33 3 (move maria stairs livingroom)
+maria_agent>PlanningIntention#33 4 (move maria livingroom kitchen)
+luca_agent>PlanningIntention#32 Starting sequential step with Intention: (Move luca corridor stairs) Effect: not person_in_room luca corridor,person_in_room luca stairs
+luca_agent>PersonDetectionIntention#1 luca moved into stairs
+light_agent>PersonDetectionIntention#11 luca moved into stairs
+light_agent>LightControlIntention#15 lights turned off in room corridor
+light_agent>LightControlIntention#15 lights turned on in room stairs
+maria_agent>PlanningIntention#33 Starting sequential step with Intention: (Move maria bedroom1 corridor) Effect: not person_in_room maria bedroom1,person_in_room maria corridor
+maria_agent>PersonDetectionIntention#3 maria moved into corridor
+light_agent>PersonDetectionIntention#11 maria moved into corridor
+light_agent>LightControlIntention#15 lights turned off in room bedroom1
+light_agent>LightControlIntention#15 lights turned on in room corridor
+0:07:30 luca_agent>PlanningIntention#32 Starting sequential step with Intention: (Move luca stairs livingroom) Effect: not person_in_room luca stairs,person_in_room luca livingroom
+luca_agent>PersonDetectionIntention#1 luca moved into livingroom
+light_agent>PersonDetectionIntention#11 luca moved into livingroom
+house_agent>TelevisionControlIntention#6 television on, channel News24
+light_agent>LightControlIntention#15 lights turned off in room stairs
+light_agent>LightControlIntention#15 lights turned on in room livingroom
+maria_agent>PlanningIntention#33 Starting sequential step with Intention: (Move maria corridor stairs) Effect: not person_in_room maria corridor,person_in_room maria stairs
+maria_agent>PersonDetectionIntention#3 maria moved into stairs
+light_agent>PersonDetectionIntention#11 maria moved into stairs
+light_agent>LightControlIntention#15 lights turned off in room corridor
+light_agent>LightControlIntention#15 lights turned on in room stairs
+luca_agent>PlanningIntention#32 Starting sequential step with Intention: (Move luca livingroom kitchen) Effect: not person_in_room luca livingroom,person_in_room luca kitchen
+luca_agent>PersonDetectionIntention#1 luca moved into kitchen
+light_agent>PersonDetectionIntention#11 luca moved into kitchen
+house_agent>TelevisionControlIntention#6 television off
+house_agent>TelevisionControlIntention#6 television lights off
+light_agent>LightControlIntention#15 lights turned off in room livingroom
+light_agent>LightControlIntention#15 lights turned on in room kitchen
+maria_agent>PlanningIntention#33 Starting sequential step with Intention: (Move maria stairs livingroom) Effect: not person_in_room maria stairs,person_in_room maria livingroom
+maria_agent>PersonDetectionIntention#3 maria moved into livingroom
+light_agent>PersonDetectionIntention#11 maria moved into livingroom
+house_agent>TelevisionControlIntention#6 television on, channel News24
+light_agent>LightControlIntention#15 lights turned off in room stairs
+light_agent>LightControlIntention#15 lights turned on in room livingroom
+0:07:45 luca_agent                     Succesfully used intention PlanningIntention to achieve goal {PddlGoal#32:{goal:["person_in_room luca kitchen"]}}
+maria_agent>PlanningIntention#33 Starting sequential step with Intention: (Move maria livingroom kitchen) Effect: not person_in_room maria livingroom,person_in_room maria kitchen
+maria_agent>PersonDetectionIntention#3 maria moved into kitchen
+light_agent>PersonDetectionIntention#11 maria moved into kitchen
+house_agent>TelevisionControlIntention#6 television off
+house_agent>TelevisionControlIntention#6 television lights off
+light_agent>LightControlIntention#15 lights turned off in room livingroom
+0:08:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: 25
+light_agent>BrightnessSensingIntention#13 brightness kitchen high
+light_agent>BrightnessSensingIntention#13 brightness livingroom high
+light_agent>BrightnessSensingIntention#13 brightness garage high
+light_agent>BrightnessSensingIntention#13 brightness mainbathroom high
+light_agent>BrightnessSensingIntention#13 brightness stairs high
+light_agent>BrightnessSensingIntention#13 brightness bedroom1 high
+light_agent>BrightnessSensingIntention#13 brightness bedroom2 high
+light_agent>BrightnessSensingIntention#13 brightness bedroom3 high
+light_agent>BrightnessSensingIntention#13 brightness secondarybathroom high
+light_agent>BrightnessSensingIntention#13 brightness corridor high
+light_agent>BrightnessSensingIntention#13 brightness garden high
+house_agent>SolarPanelMonitorIntention#9 solar_panel active
+light_agent>LightControlIntention#15 lights turned off in room kitchen
+maria_agent                    Succesfully used intention PlanningIntention to achieve goal {PddlGoal#33:{goal:["person_in_room maria kitchen"]}}
+0:09:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -1975
+0:10:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -3975
+0:11:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -5975
+0:12:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -7975
+0:13:00 house_agent                    Trying to use intention HouseCleanIntention to achieve goal {HouseCleanGoal#42:{}}
+house_agent                    Trying to use intention HouseCleanIntention to achieve goal {HouseCleanGoal#44:{}}
+house_agent>EnergyMonitorIntention#10 total electricity consumption: -9975
+vacuum_cleaner1>PostmanAcceptAllRequest#27 Reading received message {PddlGoal#43:{goal:["not (dirty livingroom)","not (dirty mainbathroom)","not (dirty garage)","at livingroom"]}}
+vacuum_cleaner1                Trying to use intention PlanningIntention to achieve goal {PddlGoal#43:{goal:["not (dirty livingroom)","not (dirty mainbathroom)","not (dirty garage)","at livingroom"]}}
+vacuum_cleaner2>PostmanAcceptAllRequest#31 Reading received message {PddlGoal#45:{goal:["not (dirty bedroom2)","not (dirty bedroom3)","not (dirty secondarybathroom)","not (dirty corridor)","at secondarybathroom"]}}
+vacuum_cleaner2                Trying to use intention PlanningIntention to achieve goal {PddlGoal#45:{goal:["not (dirty bedroom2)","not (dirty bedroom3)","not (dirty secondarybathroom)","not (dirty corridor)","at secondarybathroom"]}}
+house_agent                    Succesfully used intention HouseCleanIntention to achieve goal {HouseCleanGoal#42:{}}
+house_agent                    Succesfully used intention HouseCleanIntention to achieve goal {HouseCleanGoal#44:{}}
+vacuum_cleaner1>PlanningIntention#44 Plan found:
+vacuum_cleaner1>PlanningIntention#44 1 (move livingroom garage)
+vacuum_cleaner1>PlanningIntention#44 2 (suck garage)
+vacuum_cleaner1>PlanningIntention#44 3 (move garage livingroom)
+vacuum_cleaner1>PlanningIntention#44 4 (move livingroom mainbathroom)
+vacuum_cleaner1>PlanningIntention#44 5 (suck mainbathroom)
+vacuum_cleaner1>PlanningIntention#44 6 (move mainbathroom livingroom)
+vacuum_cleaner1>PlanningIntention#44 7 (suck livingroom)
+vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Move livingroom garage) Effect: not at livingroom,at garage
+0:13:15 vacuum_cleaner2>PlanningIntention#45 Plan found:
+vacuum_cleaner2>PlanningIntention#45 1 (move secondarybathroom corridor)
+vacuum_cleaner2>PlanningIntention#45 2 (move corridor bedroom3)
+vacuum_cleaner2>PlanningIntention#45 3 (suck bedroom3)
+vacuum_cleaner2>PlanningIntention#45 4 (move bedroom3 corridor)
+vacuum_cleaner2>PlanningIntention#45 5 (move corridor bedroom2)
+vacuum_cleaner2>PlanningIntention#45 6 (suck bedroom2)
+vacuum_cleaner2>PlanningIntention#45 7 (move bedroom2 corridor)
+vacuum_cleaner2>PlanningIntention#45 8 (suck corridor)
+vacuum_cleaner2>PlanningIntention#45 9 (move corridor secondarybathroom)
+vacuum_cleaner2>PlanningIntention#45 10 (suck secondarybathroom)
+vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Suck garage) Effect: not dirty garage
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Move secondarybathroom corridor) Effect: not at secondarybathroom,at corridor
+0:13:30 vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Move garage livingroom) Effect: not at garage,at livingroom
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Move corridor bedroom3) Effect: not at corridor,at bedroom3
+vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Move livingroom mainbathroom) Effect: not at livingroom,at mainbathroom
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Suck bedroom3) Effect: not dirty bedroom3
+0:13:45 vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Suck mainbathroom) Effect: not dirty mainbathroom
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Move bedroom3 corridor) Effect: not at bedroom3,at corridor
+0:14:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -11975
+vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Move mainbathroom livingroom) Effect: not at mainbathroom,at livingroom
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Move corridor bedroom2) Effect: not at corridor,at bedroom2
+0:14:15 vacuum_cleaner1>PlanningIntention#44 Starting sequential step with Intention: (Suck livingroom) Effect: not dirty livingroom
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Suck bedroom2) Effect: not dirty bedroom2
+0:14:30 vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Move bedroom2 corridor) Effect: not at bedroom2,at corridor
+vacuum_cleaner1                Succesfully used intention PlanningIntention to achieve goal {PddlGoal#43:{goal:["not (dirty livingroom)","not (dirty mainbathroom)","not (dirty garage)","at livingroom"]}}
+0:14:45 vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Suck corridor) Effect: not dirty corridor
+0:15:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -13975
+vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Move corridor secondarybathroom) Effect: not at corridor,at secondarybathroom
+0:15:15 vacuum_cleaner2>PlanningIntention#45 Starting sequential step with Intention: (Suck secondarybathroom) Effect: not dirty secondarybathroom
+0:15:30 vacuum_cleaner2                Succesfully used intention PlanningIntention to achieve goal {PddlGoal#45:{goal:["not (dirty bedroom2)","not (dirty bedroom3)","not (dirty secondarybathroom)","not (dirty corridor)","at secondarybathroom"]}}
+0:16:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -15975
+0:17:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -17975
+0:18:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19975
+house_agent>SolarPanelMonitorIntention#9 solar_panel inactive
+0:19:00 light_agent>BrightnessSensingIntention#13 brightness kitchen low
+light_agent>BrightnessSensingIntention#13 brightness livingroom low
+light_agent>BrightnessSensingIntention#13 brightness garage low
+light_agent>BrightnessSensingIntention#13 brightness mainbathroom low
+light_agent>BrightnessSensingIntention#13 brightness stairs low
+light_agent>BrightnessSensingIntention#13 brightness bedroom1 low
+light_agent>BrightnessSensingIntention#13 brightness bedroom2 low
+light_agent>BrightnessSensingIntention#13 brightness bedroom3 low
+light_agent>BrightnessSensingIntention#13 brightness secondarybathroom low
+light_agent>BrightnessSensingIntention#13 brightness corridor low
+light_agent>BrightnessSensingIntention#13 brightness garden low
+light_agent>LightControlIntention#15 lights turned on in room garden
+light_agent>LightControlIntention#15 lights turned on in room kitchen
+0:20:00 luca_agent                     Trying to use intention PlanningIntention to achieve goal {PddlGoal#63:{goal:["person_in_room luca livingroom"]}}
+maria_agent                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#64:{goal:["person_in_room maria livingroom"]}}
+house_agent>EnergyMonitorIntention#10 total electricity consumption: -19955
+0:20:15 luca_agent>PlanningIntention#63 Plan found:
+luca_agent>PlanningIntention#63 1 (move luca kitchen livingroom)
+maria_agent>PlanningIntention#64 Plan found:
+maria_agent>PlanningIntention#64 1 (move maria kitchen livingroom)
+luca_agent>PlanningIntention#63 Starting sequential step with Intention: (Move luca kitchen livingroom) Effect: not person_in_room luca kitchen,person_in_room luca livingroom
+luca_agent>PersonDetectionIntention#1 luca moved into livingroom
+light_agent>PersonDetectionIntention#11 luca moved into livingroom
+house_agent>TelevisionControlIntention#6 television on
+house_agent>TelevisionControlIntention#6 television lights on
+light_agent>LightControlIntention#15 lights turned on in room livingroom
+maria_agent>PlanningIntention#64 Starting sequential step with Intention: (Move maria kitchen livingroom) Effect: not person_in_room maria kitchen,person_in_room maria livingroom
+maria_agent>PersonDetectionIntention#3 maria moved into livingroom
+light_agent>PersonDetectionIntention#11 maria moved into livingroom
+light_agent>LightControlIntention#15 lights turned off in room kitchen
+0:20:30 luca_agent                     Succesfully used intention PlanningIntention to achieve goal {PddlGoal#63:{goal:["person_in_room luca livingroom"]}}
+maria_agent                    Succesfully used intention PlanningIntention to achieve goal {PddlGoal#64:{goal:["person_in_room maria livingroom"]}}
+0:21:00 house_agent>GarageDoorControlIntention#8 closing garage_door
+house_agent>EnergyMonitorIntention#10 total electricity consumption: -19890
+shutter_agent>ShutterControlIntention#17 shutter kitchen down
+shutter_agent>ShutterControlIntention#17 shutter kitchen down
+shutter_agent>ShutterControlIntention#17 shutter livingroom down
+shutter_agent>ShutterControlIntention#17 shutter livingroom down
+shutter_agent>ShutterControlIntention#17 shutter garage down
+shutter_agent>ShutterControlIntention#17 shutter mainbathroom down
+shutter_agent>ShutterControlIntention#17 shutter garden down
+shutter_agent>ShutterControlIntention#17 shutter stairs down
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 down
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 down
+shutter_agent>ShutterControlIntention#17 shutter bedroom2 down
+shutter_agent>ShutterControlIntention#17 shutter bedroom3 down
+shutter_agent>ShutterControlIntention#17 shutter secondarybathroom down
+0:22:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19810
+0:23:00 luca_agent                     Trying to use intention PlanningIntention to achieve goal {PddlGoal#67:{goal:["person_in_room luca bedroom1"]}}
+maria_agent                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#68:{goal:["person_in_room maria bedroom1"]}}
+house_agent>EnergyMonitorIntention#10 total electricity consumption: -19730
+light_agent>LightControlIntention#15 lights turned off in room garden
+0:23:15 luca_agent>PlanningIntention#67 Plan found:
+luca_agent>PlanningIntention#67 1 (move luca livingroom stairs)
+luca_agent>PlanningIntention#67 2 (move luca stairs corridor)
+luca_agent>PlanningIntention#67 3 (move luca corridor bedroom1)
+luca_agent>PlanningIntention#67 Starting sequential step with Intention: (Move luca livingroom stairs) Effect: not person_in_room luca livingroom,person_in_room luca stairs
+luca_agent>PersonDetectionIntention#1 luca moved into stairs
+light_agent>PersonDetectionIntention#11 luca moved into stairs
+light_agent>LightControlIntention#15 lights turned on in room stairs
+maria_agent>PlanningIntention#68 Plan found:
+maria_agent>PlanningIntention#68 1 (move maria livingroom stairs)
+maria_agent>PlanningIntention#68 2 (move maria stairs corridor)
+maria_agent>PlanningIntention#68 3 (move maria corridor bedroom1)
+luca_agent>PlanningIntention#67 Starting sequential step with Intention: (Move luca stairs corridor) Effect: not person_in_room luca stairs,person_in_room luca corridor
+luca_agent>PersonDetectionIntention#1 luca moved into corridor
+light_agent>PersonDetectionIntention#11 luca moved into corridor
+light_agent>LightControlIntention#15 lights turned off in room stairs
+light_agent>LightControlIntention#15 lights turned on in room corridor
+maria_agent>PlanningIntention#68 Starting sequential step with Intention: (Move maria livingroom stairs) Effect: not person_in_room maria livingroom,person_in_room maria stairs
+maria_agent>PersonDetectionIntention#3 maria moved into stairs
+light_agent>PersonDetectionIntention#11 maria moved into stairs
+house_agent>TelevisionControlIntention#6 television off
+house_agent>TelevisionControlIntention#6 television lights off
+light_agent>LightControlIntention#15 lights turned off in room livingroom
+light_agent>LightControlIntention#15 lights turned on in room stairs
+0:23:30 luca_agent>PlanningIntention#67 Starting sequential step with Intention: (Move luca corridor bedroom1) Effect: not person_in_room luca corridor,person_in_room luca bedroom1
+luca_agent>PersonDetectionIntention#1 luca moved into bedroom1
+light_agent>PersonDetectionIntention#11 luca moved into bedroom1
+light_agent>LightControlIntention#15 lights turned off in room corridor
+light_agent>LightControlIntention#15 lights turned on in room bedroom1
+maria_agent>PlanningIntention#68 Starting sequential step with Intention: (Move maria stairs corridor) Effect: not person_in_room maria stairs,person_in_room maria corridor
+maria_agent>PersonDetectionIntention#3 maria moved into corridor
+light_agent>PersonDetectionIntention#11 maria moved into corridor
+light_agent>LightControlIntention#15 lights turned off in room stairs
+light_agent>LightControlIntention#15 lights turned on in room corridor
+luca_agent                     Succesfully used intention PlanningIntention to achieve goal {PddlGoal#67:{goal:["person_in_room luca bedroom1"]}}
+maria_agent>PlanningIntention#68 Starting sequential step with Intention: (Move maria corridor bedroom1) Effect: not person_in_room maria corridor,person_in_room maria bedroom1
+maria_agent>PersonDetectionIntention#3 maria moved into bedroom1
+light_agent>PersonDetectionIntention#11 maria moved into bedroom1
+light_agent>LightControlIntention#15 lights turned off in room corridor
+0:23:45 maria_agent                    Succesfully used intention PlanningIntention to achieve goal {PddlGoal#68:{goal:["person_in_room maria bedroom1"]}}
+1:00:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19702.5
+1:01:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19692.5
+1:02:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19682.5
+1:03:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19672.5
+1:04:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19662.5
+1:05:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19652.5
+1:06:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19642.5
+1:07:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19632.5
+shutter_agent>ShutterControlIntention#17 shutter kitchen up
+shutter_agent>ShutterControlIntention#17 shutter kitchen up
+shutter_agent>ShutterControlIntention#17 shutter livingroom up
+shutter_agent>ShutterControlIntention#17 shutter livingroom up
+shutter_agent>ShutterControlIntention#17 shutter garage up
+shutter_agent>ShutterControlIntention#17 shutter mainbathroom up
+shutter_agent>ShutterControlIntention#17 shutter garden up
+shutter_agent>ShutterControlIntention#17 shutter stairs up
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 up
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 up
+shutter_agent>ShutterControlIntention#17 shutter bedroom2 up
+shutter_agent>ShutterControlIntention#17 shutter bedroom3 up
+shutter_agent>ShutterControlIntention#17 shutter secondarybathroom up
+1:08:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -19622.5
+light_agent>BrightnessSensingIntention#13 brightness kitchen high
+light_agent>BrightnessSensingIntention#13 brightness livingroom high
+light_agent>BrightnessSensingIntention#13 brightness garage high
+light_agent>BrightnessSensingIntention#13 brightness mainbathroom high
+light_agent>BrightnessSensingIntention#13 brightness stairs high
+light_agent>BrightnessSensingIntention#13 brightness bedroom1 high
+light_agent>BrightnessSensingIntention#13 brightness bedroom2 high
+light_agent>BrightnessSensingIntention#13 brightness bedroom3 high
+light_agent>BrightnessSensingIntention#13 brightness secondarybathroom high
+light_agent>BrightnessSensingIntention#13 brightness corridor high
+light_agent>BrightnessSensingIntention#13 brightness garden high
+house_agent>SolarPanelMonitorIntention#9 solar_panel active
+light_agent>LightControlIntention#15 lights turned off in room bedroom1
+1:09:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -21622.5
+1:10:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -23622.5
+1:11:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -25622.5
+1:12:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -27622.5
+1:13:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -29622.5
+1:14:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -31622.5
+1:15:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -33622.5
+1:16:00 lawn_mower1                    Trying to use intention RetryIntention to achieve goal {RetryGoal#76:{goal:{PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}}}
+lawn_mower1                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+lawn_mower2                    Trying to use intention RetryIntention to achieve goal {RetryGoal#78:{goal:{PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}}}
+lawn_mower2                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+house_agent>EnergyMonitorIntention#10 total electricity consumption: -35622.5
+1:16:15 lawn_mower1>PlanningIntention#76 Plan found:
+lawn_mower1>PlanningIntention#76 1 (cut a11 garden)
+lawn_mower1>PlanningIntention#76 2 (move a11 a12)
+lawn_mower1>PlanningIntention#76 3 (cut a12 garden)
+lawn_mower1>PlanningIntention#76 4 (move a12 a13)
+lawn_mower1>PlanningIntention#76 5 (cut a13 garden)
+lawn_mower1>PlanningIntention#76 6 (move a13 a14)
+lawn_mower1>PlanningIntention#76 7 (cut a14 garden)
+lawn_mower1>PlanningIntention#76 8 (move a14 a15)
+lawn_mower1>PlanningIntention#76 9 (cut a15 garden)
+lawn_mower1>PlanningIntention#76 10 (move a15 a25)
+lawn_mower1>PlanningIntention#76 11 (cut a25 garden)
+lawn_mower1>PlanningIntention#76 12 (move a25 a35)
+lawn_mower1>PlanningIntention#76 13 (cut a35 garden)
+lawn_mower1>PlanningIntention#76 14 (move a35 a45)
+lawn_mower1>PlanningIntention#76 15 (cut a45 garden)
+lawn_mower1>PlanningIntention#76 16 (move a45 a44)
+lawn_mower1>PlanningIntention#76 17 (cut a44 garden)
+lawn_mower1>PlanningIntention#76 18 (move a44 a43)
+lawn_mower1>PlanningIntention#76 19 (cut a43 garden)
+1:16:30 lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a11 garden) Effect: not tall-grass a11
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Move a11 a12) Effect: not at a11,at a12
+lawn_mower2>PlanningIntention#78 Plan found:
+lawn_mower2>PlanningIntention#78 1 (cut a45 garden)
+lawn_mower2>PlanningIntention#78 2 (move a45 a44)
+lawn_mower2>PlanningIntention#78 3 (move a44 a43)
+lawn_mower2>PlanningIntention#78 4 (cut a43 garden)
+lawn_mower2>PlanningIntention#78 5 (move a43 a44)
+lawn_mower2>PlanningIntention#78 6 (cut a44 garden)
+lawn_mower2>PlanningIntention#78 7 (move a44 a45)
+lawn_mower2>PlanningIntention#78 8 (move a45 a35)
+lawn_mower2>PlanningIntention#78 9 (cut a35 garden)
+lawn_mower2>PlanningIntention#78 10 (move a35 a25)
+lawn_mower2>PlanningIntention#78 11 (cut a25 garden)
+lawn_mower2>PlanningIntention#78 12 (move a25 a15)
+lawn_mower2>PlanningIntention#78 13 (cut a15 garden)
+lawn_mower2>PlanningIntention#78 14 (move a15 a14)
+lawn_mower2>PlanningIntention#78 15 (cut a14 garden)
+lawn_mower2>PlanningIntention#78 16 (move a14 a13)
+lawn_mower2>PlanningIntention#78 17 (cut a13 garden)
+lawn_mower2>PlanningIntention#78 18 (move a13 a12)
+lawn_mower2>PlanningIntention#78 19 (cut a12 garden)
+lawn_mower2>PlanningIntention#78 20 (move a12 a11)
+lawn_mower2>PlanningIntention#78 21 (cut a11 garden)
+1:16:45 lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Cut a45 garden) Effect: not tall-grass a45
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a12 garden) Effect: not tall-grass a12
+lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Move a45 a44) Effect: not at a45,at a44
+1:17:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -37622.5
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Move a12 a13) Effect: not at a12,at a13
+lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Move a44 a43) Effect: not at a44,at a43
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a13 garden) Effect: not tall-grass a13
+1:17:15 lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Cut a43 garden) Effect: not tall-grass a43
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Move a13 a14) Effect: not at a13,at a14
+lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Move a43 a44) Effect: not at a43,at a44
+1:17:30 lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a14 garden) Effect: not tall-grass a14
+lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Cut a44 garden) Effect: not tall-grass a44
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Move a14 a15) Effect: not at a14,at a15
+1:17:45 lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Move a44 a45) Effect: not at a44,at a45
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a15 garden) Effect: not tall-grass a15
+1:18:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -39622.5
+house_agent>SolarPanelMonitorIntention#9 solar_panel inactive
+lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Move a45 a35) Effect: not at a45,at a35
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Move a15 a25) Effect: not at a15,at a25
+1:18:15 lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Cut a35 garden) Effect: not tall-grass a35
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a25 garden) Effect: not tall-grass a25
+1:18:30 lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Move a35 a25) Effect: not at a35,at a25
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Move a25 a35) Effect: not at a25,at a35
+lawn_mower2>PlanningIntention#78 Starting sequential step with Intention: (Cut a25 garden) Effect: not tall-grass a25
+lawn_mower2>PlanningIntention#78 Intention failed: Plan execution aborted
+lawn_mower2                    Failed to use intention PlanningIntention to achieve goal {PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}: Plan execution aborted
+lawn_mower2                    Error: Plan execution aborted
+    at C:\Users\david\Documents\UniTN\5 anno\Autonomous Software Agents [145867] - GIORGINI\lab\Project\Autonode.js\src\pddl\Blackbox.js:115:47
+    at runNextTicks (node:internal/process/task_queues:61:5)
+    at processTimers (node:internal/timers:499:9)
+    at async Promise.all (index 0)
+lawn_mower2                    No success in achieving goal {PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+1:18:45 lawn_mower2>RetryIntention#77  wait for something to change on beliefset or timeout before retrying for the 2th time goal {PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+lawn_mower1>PlanningIntention#76 Starting sequential step with Intention: (Cut a35 garden) Effect: not tall-grass a35
+lawn_mower1>PlanningIntention#76 Intention failed: Plan execution aborted
+lawn_mower1                    Failed to use intention PlanningIntention to achieve goal {PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}: Plan execution aborted
+lawn_mower1                    Error: Plan execution aborted
+    at C:\Users\david\Documents\UniTN\5 anno\Autonomous Software Agents [145867] - GIORGINI\lab\Project\Autonode.js\src\pddl\Blackbox.js:115:47
+    at async Promise.all (index 0)
+lawn_mower1                    No success in achieving goal {PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+lawn_mower1>RetryIntention#75  wait for something to change on beliefset or timeout before retrying for the 2th time goal {PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+1:19:00 light_agent>BrightnessSensingIntention#13 brightness kitchen low
+light_agent>BrightnessSensingIntention#13 brightness livingroom low
+light_agent>BrightnessSensingIntention#13 brightness garage low
+light_agent>BrightnessSensingIntention#13 brightness mainbathroom low
+light_agent>BrightnessSensingIntention#13 brightness stairs low
+light_agent>BrightnessSensingIntention#13 brightness bedroom1 low
+light_agent>BrightnessSensingIntention#13 brightness bedroom2 low
+light_agent>BrightnessSensingIntention#13 brightness bedroom3 low
+light_agent>BrightnessSensingIntention#13 brightness secondarybathroom low
+light_agent>BrightnessSensingIntention#13 brightness corridor low
+light_agent>BrightnessSensingIntention#13 brightness garden low
+light_agent>LightControlIntention#15 lights turned on in room garden
+light_agent>LightControlIntention#15 lights turned on in room bedroom1
+lawn_mower2                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+1:19:15 lawn_mower1                    Trying to use intention PlanningIntention to achieve goal {PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+1:19:30 lawn_mower2>PlanningIntention#119 Plan found:
+lawn_mower2                    Succesfully used intention PlanningIntention to achieve goal {PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+lawn_mower2                    Succesfully used intention RetryIntention to achieve goal {RetryGoal#78:{goal:{PddlGoal#77:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}}}
+lawn_mower1>PlanningIntention#120 Plan found:
+1:19:45 lawn_mower1                    Succesfully used intention PlanningIntention to achieve goal {PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}
+lawn_mower1                    Succesfully used intention RetryIntention to achieve goal {RetryGoal#76:{goal:{PddlGoal#75:{goal:["not (tall-grass a11)","not (tall-grass a12)","not (tall-grass a13)","not (tall-grass a14)","not (tall-grass a15)","not (tall-grass a25)","not (tall-grass a35)","not (tall-grass a43)","not (tall-grass a44)","not (tall-grass a45)"]}}}}
+1:20:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -39602.5
+1:21:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -39582.5
+shutter_agent>ShutterControlIntention#17 shutter kitchen down
+shutter_agent>ShutterControlIntention#17 shutter kitchen down
+shutter_agent>ShutterControlIntention#17 shutter livingroom down
+shutter_agent>ShutterControlIntention#17 shutter livingroom down
+shutter_agent>ShutterControlIntention#17 shutter garage down
+shutter_agent>ShutterControlIntention#17 shutter mainbathroom down
+shutter_agent>ShutterControlIntention#17 shutter garden down
+shutter_agent>ShutterControlIntention#17 shutter stairs down
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 down
+shutter_agent>ShutterControlIntention#17 shutter bedroom1 down
+shutter_agent>ShutterControlIntention#17 shutter bedroom2 down
+shutter_agent>ShutterControlIntention#17 shutter bedroom3 down
+shutter_agent>ShutterControlIntention#17 shutter secondarybathroom down
+1:22:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -39562.5
+1:23:00 house_agent>EnergyMonitorIntention#10 total electricity consumption: -39542.5
+light_agent>LightControlIntention#15 lights turned off in room garden

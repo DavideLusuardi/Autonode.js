@@ -57,7 +57,18 @@ let agents = []
     let { PlanningIntention } = require('../pddl/Blackbox')([Person.Move])
     agents.luca_agent.intentions.push(PlanningIntention)
 }
+{
+    agents.maria_agent = new Agent('maria_agent', { person: house.people.maria })
 
+    agents.maria_agent.intentions.push(Room.RoomConnectionIntention)
+    agents.maria_agent.postSubGoal(new Room.RoomConnectionGoal(Object.values(house.rooms)))
+
+    agents.maria_agent.intentions.push(Person.PersonDetectionIntention)
+    agents.maria_agent.postSubGoal(new Person.PersonDetectionGoal({maria: house.people.maria}))
+
+    let { PlanningIntention } = require('../pddl/Blackbox')([Person.Move])
+    agents.maria_agent.intentions.push(PlanningIntention)
+}
 // ------------------------house agent--------------------------------------------------------------------
 agents.house_agent = new Agent('house_agent')
 
@@ -134,10 +145,6 @@ agents.irrigation_agent.postSubGoal(new Irrigation.IrrigationControlGoal(house.d
     let { PlanningIntention } = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
     agents.lawn_mower1.intentions.push(PlanningIntention)
     agents.lawn_mower1.intentions.push(RetryIntention)
-
-    // let lawn_mower_goal = house.rooms.garden.grass_areas.map(a => { return `not (tall-grass ${a})` })
-    // agents.lawn_mower1.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
-    // agents.lawn_mower1.postSubGoal(new RetryGoal({ goal: new PlanningGoal({ goal: lawn_mower_goal }) }))
 }
 
 {
@@ -152,10 +159,6 @@ agents.irrigation_agent.postSubGoal(new Irrigation.IrrigationControlGoal(house.d
     let { PlanningIntention } = require('../pddl/Blackbox')([LawnMower.Cut, LawnMower.Move])
     agents.lawn_mower2.intentions.push(PlanningIntention)
     agents.lawn_mower2.intentions.push(RetryIntention)
-
-    // let lawn_mower_goal = house.rooms.garden.grass_areas.map(a => { return `not (tall-grass ${a})` })
-    // agents.lawn_mower2.postSubGoal( new PlanningGoal( { goal: lawn_mower_goal } ) )
-    // agents.lawn_mower2.postSubGoal(new RetryGoal({ goal: new PlanningGoal({ goal: lawn_mower_goal }) }))
 }
 
 // ------------------------vacuum cleaner agents--------------------------------------------------------------------
@@ -177,8 +180,6 @@ agents.irrigation_agent.postSubGoal(new Irrigation.IrrigationControlGoal(house.d
 
     let { PlanningIntention } = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
     agents.vacuum_cleaner1.intentions.push(PlanningIntention)
-    // let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})`} ).concat([`at ${house.devices.vacuum_cleaner1.at}`])
-    // agents.vacuum_cleaner1.postSubGoal( new PlanningGoal( { goal: vacuum_cleaner_goal } ) )
 
     agents.vacuum_cleaner1.postSubGoal(new MessageDispatcher.Postman())
 }
@@ -200,8 +201,6 @@ agents.irrigation_agent.postSubGoal(new Irrigation.IrrigationControlGoal(house.d
 
     let { PlanningIntention } = require('../pddl/Blackbox')([VacuumCleaner.Suck, VacuumCleaner.Move])
     agents.vacuum_cleaner2.intentions.push(PlanningIntention)
-    // let vacuum_cleaner_goal = rooms.map(r => { return `not (dirty ${r.name})` }).concat([`at ${house.devices.vacuum_cleaner2.at}`])
-    // agents.vacuum_cleaner2.postSubGoal(new PlanningGoal({ goal: vacuum_cleaner_goal }))
 
     agents.vacuum_cleaner2.postSubGoal(new MessageDispatcher.Postman())
 }
@@ -213,13 +212,17 @@ agents.irrigation_agent.postSubGoal(new Irrigation.IrrigationControlGoal(house.d
 // Daily schedule
 Clock.global.observe('mm', (mm, key) => {
     var time = Clock.global
-    if(time.dd == 0 && time.hh==7 && time.mm==0){ // TODO
+    if(time.dd == 0 && time.hh==7 && time.mm==0){
         house.people.luca.is_sleeping = false
         agents.luca_agent.postSubGoal( new PlanningGoal( { goal: [`person_in_room ${house.people.luca.name} ${house.rooms.kitchen.name}`] } ) )
+        house.people.maria.is_sleeping = false
+        agents.maria_agent.postSubGoal( new PlanningGoal( { goal: [`person_in_room ${house.people.maria.name} ${house.rooms.kitchen.name}`] } ) )
     } else if(time.dd == 0 && time.hh==20 && time.mm==0){
         agents.luca_agent.postSubGoal( new PlanningGoal( { goal: [`person_in_room ${house.people.luca.name} ${house.rooms.livingroom.name}`] } ) )
+        agents.maria_agent.postSubGoal( new PlanningGoal( { goal: [`person_in_room ${house.people.maria.name} ${house.rooms.livingroom.name}`] } ) )
     } else if(time.dd == 0 && time.hh==23 && time.mm==0){
         agents.luca_agent.postSubGoal( new PlanningGoal( { goal: [`person_in_room ${house.people.luca.name} ${house.rooms.bedroom1.name}`] } ) )
+        agents.maria_agent.postSubGoal( new PlanningGoal( { goal: [`person_in_room ${house.people.maria.name} ${house.rooms.bedroom1.name}`] } ) )
     }
 
     if (time.hh == 8 && time.mm == 0)
@@ -227,7 +230,7 @@ Clock.global.observe('mm', (mm, key) => {
     if (time.hh == 18 && time.mm == 0)
         house.devices.solar_panels.deactivate()
 
-    if (time.dd == 0 && time.hh == 12 && time.mm == 0) { // TODO
+    if (time.dd == 0 && time.hh == 13 && time.mm == 0) {
         let rooms1 = [house.rooms.livingroom, house.rooms.mainbathroom, house.rooms.garage]
         agents.house_agent.intentions.push(House.HouseCleanIntention)
         agents.house_agent.postSubGoal(new House.HouseCleanGoal(rooms1, house.devices.vacuum_cleaner1, agents.vacuum_cleaner1.name))
